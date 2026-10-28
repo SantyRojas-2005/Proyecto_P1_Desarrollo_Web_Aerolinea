@@ -1,4 +1,4 @@
-﻿@model Progra_03.Models.Reserva
+@model Progra_03.Models.Reserva
 @{
     ViewBag.Title = "Editar Reserva";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -18,7 +18,7 @@
                     {
                         @Html.AntiForgeryToken()
 
-                        <!-- Claves ocultas fundamentales -->
+
                         @Html.HiddenFor(model => model.ReservaId)
                         @Html.HiddenFor(model => model.UsuarioId)
                         @Html.HiddenFor(model => model.FechaCreacion)
@@ -40,7 +40,7 @@
 
                             <div class="col-12 mt-3">
                                 <label class="form-label fw-bold text-muted small text-uppercase">Fecha de Expiración</label>
-                                <!-- Forzamos el formato datetime-local para evitar errores en navegadores modernos -->
+
                                 <input type="datetime-local" name="FechaExpiracion" class="form-control" value="@(Model.FechaExpiracion.HasValue ? Model.FechaExpiracion.Value.ToString("yyyy-MM-ddTHH:mm") : "")" />
                                 @Html.ValidationMessageFor(model => model.FechaExpiracion, "", new { @class = "text-danger small" })
                                 <div class="form-text small">Deje en blanco si la reserva ya está pagada o no expira.</div>

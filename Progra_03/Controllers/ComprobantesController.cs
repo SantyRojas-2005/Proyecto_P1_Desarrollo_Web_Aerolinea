@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -7,33 +7,28 @@ using Progra_03.Models;
 
 namespace Progra_03.Controllers
 {
-    [Authorize] // Solo clientes autenticados ven sus comprobantes
+    [Authorize]
     public class ComprobantesController : Controller
     {
         private AerolineaVIPContext db = new AerolineaVIPContext();
 
-        // GET: /Comprobantes/Index (Pantalla 16)
         public ActionResult Index(DateTime? desde, DateTime? hasta, string tipo, int? idPreview)
         {
             string userId = User.Identity.GetUserId();
 
-            // 1. Consulta base a la vista de comprobantes filtrando por el cliente actual
             var query = db.vw_ComprobanteDetalle.Where(c => c.UsuarioId == userId);
 
-            // 2. Aplicar filtros si el cliente los llena
             if (desde.HasValue) query = query.Where(c => c.FechaEmision >= desde.Value);
             if (hasta.HasValue) query = query.Where(c => c.FechaEmision <= hasta.Value);
             if (!string.IsNullOrEmpty(tipo) && tipo != "Todos") query = query.Where(c => c.TipoComprobanteCodigo == tipo);
 
             var comprobantes = query.OrderByDescending(c => c.FechaEmision).ToList();
 
-            // 3. Devolver datos al ViewBag para mantener los filtros llenos
             ViewBag.Desde = desde?.ToString("yyyy-MM-dd");
             ViewBag.Hasta = hasta?.ToString("yyyy-MM-dd");
             ViewBag.Tipo = tipo;
             ViewBag.TiposComprobante = db.TipoComprobante.ToList();
 
-            // 4. Lógica de "Vista Previa" si el usuario dio clic en "Visualizar"
             if (idPreview.HasValue)
             {
                 var comprobante = db.vw_ComprobanteDetalle.FirstOrDefault(c => c.ComprobanteId == idPreview.Value && c.UsuarioId == userId);
@@ -41,7 +36,6 @@ namespace Progra_03.Controllers
                 {
                     ViewBag.Preview = comprobante;
 
-                    // Extraemos todos los detalles (asientos/pasajeros) de la reserva asociada
                     var detalles = db.ReservaPasajeroVuelo.Where(r => r.ReservaId == comprobante.ReservaId).ToList();
 
                     var listaPasajeros = new List<string>();

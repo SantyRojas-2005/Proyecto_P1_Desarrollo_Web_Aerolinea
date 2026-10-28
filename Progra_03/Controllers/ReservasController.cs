@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity;
 using Progra_03.Models;
 using System;
 using Rotativa;
@@ -9,12 +9,10 @@ using System.Web.Mvc;
 
 namespace Progra_03.Controllers
 {
-    [Authorize] 
+    [Authorize]
     public class ReservasController : Controller
     {
         private AerolineaVIPContext db = new AerolineaVIPContext();
-
-        // GET: Reservas/SeleccionAsiento/5
         public ActionResult SeleccionAsiento(int vueloId)
         {
             var vuelo = db.vw_VueloDetalle.FirstOrDefault(v => v.VueloId == vueloId);
@@ -37,8 +35,6 @@ namespace Progra_03.Controllers
         {
             var vuelo = db.vw_VueloDetalle.FirstOrDefault(v => v.VueloId == vueloId);
             if (vuelo == null) return HttpNotFound("Vuelo no encontrado.");
-
-            // Buscamos el código físico del asiento (ej. "3D")
             var asientoFisico = db.Asiento.FirstOrDefault(a => a.NumeroAsiento == numeroAsiento);
 
             ViewBag.Vuelo = vuelo;
@@ -58,8 +54,6 @@ namespace Progra_03.Controllers
             }
 
             string errorValidacion = null;
-
-            // 1. VALIDACIONES DE TU CÓDIGO ORIGINAL (Adaptadas para iterar sobre todos los pasajeros)
             for (int i = 0; i < NumeroAsiento.Length; i++)
             {
                 if (!Regex.IsMatch(Nombres[i], @"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$") || !Regex.IsMatch(Apellidos[i], @"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"))
@@ -90,15 +84,11 @@ namespace Progra_03.Controllers
 
                 if (errorValidacion != null) break; // Detenemos la validación al primer error
             }
-
-            // Si hay error, devolvemos a la vista con los datos retenidos (usando el índice 0 para simplificar la vista actual)
             if (errorValidacion != null)
             {
                 var vueloError = db.vw_VueloDetalle.FirstOrDefault(v => v.VueloId == VueloId);
                 ViewBag.Vuelo = vueloError;
                 ViewBag.ErrorValidacion = errorValidacion;
-
-                // Retenemos los datos del primer pasajero para no vaciarle el formulario
                 ViewBag.NumeroAsiento = NumeroAsiento[0];
                 ViewBag.CodigoAsiento = CodigoAsiento[0];
                 ViewBag.NumeroDocumento = NumeroDocumento[0];
@@ -110,14 +100,10 @@ namespace Progra_03.Controllers
 
                 return View("Pasajeros");
             }
-
-            // 2. PROCESO DE GUARDADO EN BASE DE DATOS (Múltiples pasajeros)
             try
             {
                 var detalleVuelo = db.vw_VueloDetalle.FirstOrDefault(v => v.VueloId == VueloId);
                 string userId = User.Identity.GetUserId();
-
-                // Crear Cabecera de Reserva (PUNTO 2: FechaExpiracion en 30 minutos)
                 var reserva = new Reserva
                 {
                     UsuarioId = userId,
@@ -127,13 +113,9 @@ namespace Progra_03.Controllers
                 };
                 db.Reserva.Add(reserva);
                 db.SaveChanges(); // Guardamos para obtener el ReservaId
-
-                // PUNTO 3: Iterar sobre el arreglo para registrar N pasajeros y N asientos
                 for (int i = 0; i < NumeroAsiento.Length; i++)
                 {
                     string docActual = NumeroDocumento[i];
-
-                    // Verificar si el pasajero ya existe en la BD
                     var pasajero = db.Pasajero.FirstOrDefault(p => p.NumeroDocumento == docActual);
                     if (pasajero == null)
                     {
@@ -151,8 +133,6 @@ namespace Progra_03.Controllers
                         db.Pasajero.Add(pasajero);
                         db.SaveChanges(); // Guardamos para obtener el PasajeroId
                     }
-
-                    // Crear el asiento para este pasajero
                     var detalleReserva = new ReservaPasajeroVuelo
                     {
                         ReservaId = reserva.ReservaId,
@@ -165,8 +145,6 @@ namespace Progra_03.Controllers
                     };
                     db.ReservaPasajeroVuelo.Add(detalleReserva);
                 }
-
-                // Confirmar todos los asientos en la BD
                 db.SaveChanges();
 
                 return RedirectToAction("Resumen", new { id = reserva.ReservaId });
@@ -178,8 +156,6 @@ namespace Progra_03.Controllers
                 {
                     innerMessage += " -> " + ex.InnerException.InnerException.Message;
                 }
-
-                // Si la BD detecta un conflicto de asientos o pasajeros repetidos
                 if (innerMessage.Contains("UX_RPV_PasajeroActivo") || innerMessage.Contains("UX_RPV_AsientoActivo"))
                 {
                     var vueloError = db.vw_VueloDetalle.FirstOrDefault(v => v.VueloId == VueloId);
@@ -194,7 +170,6 @@ namespace Progra_03.Controllers
                 return Content("Error al guardar en BD: " + ex.Message + "<br/><br/><strong>DETALLE EXACTO DE SQL:</strong><br/> " + innerMessage);
             }
         }
-        // GET: /Reservas/Resumen/5
         public ActionResult Resumen(int id)
         {
             var reserva = db.Reserva.Find(id);
@@ -208,15 +183,11 @@ namespace Progra_03.Controllers
 
             return View(reserva);
         }
-
-        // GET: /Reservas/Pago/5
         public ActionResult Pago(int id)
         {
             var reserva = db.Reserva.Find(id);
             if (reserva == null || reserva.UsuarioId != User.Identity.GetUserId())
                 return HttpNotFound();
-
-            // Calcular el total sumando el importe de los asientos de esta reserva
             decimal total = db.ReservaPasajeroVuelo
                               .Where(r => r.ReservaId == id)
                               .Sum(r => r.ImporteTramo);
@@ -237,17 +208,12 @@ namespace Progra_03.Controllers
                 var reserva = db.Reserva.Find(ReservaId);
                 if (reserva == null || reserva.UsuarioId != User.Identity.GetUserId())
                     return HttpNotFound();
-
-                // Evitar doble pago
                 if (reserva.EstadoReservaCodigo != "PENDIENTE")
                     return Content("Esta reserva ya ha sido procesada o cancelada.");
-
-                // Usamos una transacción para asegurar que todas las tablas se actualicen juntas
                 using (var transaction = db.Database.BeginTransaction())
                 {
                     try
                     {
-                        // 1. Crear registro de Compra
                         var compra = new Compra
                         {
                             ReservaId = ReservaId,
@@ -259,8 +225,6 @@ namespace Progra_03.Controllers
                         };
                         db.Compra.Add(compra);
                         db.SaveChanges(); // Guardamos para obtener el CompraId
-
-                        // 2. Crear registro de Pago Simulado
                         string ultimos4 = NumeroTarjeta.Substring(NumeroTarjeta.Length - 4);
                         var pago = new Pago
                         {
@@ -277,8 +241,6 @@ namespace Progra_03.Controllers
                             MensajeResultado = "Pago simulado aprobado (dato de demostración)."
                         };
                         db.Pago.Add(pago);
-
-                        // 3. Generar Comprobante (Factura Académica)
                         var comprobante = new Comprobante
                         {
                             CompraId = compra.CompraId,
@@ -288,27 +250,18 @@ namespace Progra_03.Controllers
                             EstadoComprobanteCodigo = "EMITIDO"
                         };
                         db.Comprobante.Add(comprobante);
-
-                        // 4. Actualizar Estado de la Reserva
                         reserva.EstadoReservaCodigo = "CONFIRMADA";
-
-                        // 5. Actualizar Estado de los Asientos
                         var asignaciones = db.ReservaPasajeroVuelo.Where(r => r.ReservaId == ReservaId).ToList();
                         foreach (var asig in asignaciones)
                         {
                             asig.EstadoAsignacionCodigo = "CONFIRMADA";
                         }
-
-                        // Confirmar todos los cambios en la BD
                         db.SaveChanges();
                         transaction.Commit();
-
-                        // Redirigir a la pantalla de éxito final
                         return RedirectToAction("Boleto", new { id = reserva.ReservaId });
                     }
                     catch (Exception)
                     {
-                        // Si algo falla, revertimos todo para no dejar datos huérfanos
                         transaction.Rollback();
                         throw;
                     }
@@ -323,21 +276,15 @@ namespace Progra_03.Controllers
                 return Content("Error al procesar el pago: " + ex.Message + "<br/><br/><strong>SQL:</strong> " + innerMessage);
             }
         }
-
-        // GET: /Reservas/Boleto/5
         public ActionResult Boleto(int id)
         {
             var reserva = db.Reserva.Find(id);
             if (reserva == null || reserva.UsuarioId != User.Identity.GetUserId())
                 return HttpNotFound();
-
-            // Obtenemos los datos para mostrar el boleto final
             var detalle = db.ReservaPasajeroVuelo.FirstOrDefault(d => d.ReservaId == id);
             ViewBag.Vuelo = db.vw_VueloDetalle.FirstOrDefault(v => v.VueloId == detalle.VueloId);
             ViewBag.Pasajero = db.Pasajero.Find(detalle.PasajeroId);
             ViewBag.Asiento = db.Asiento.FirstOrDefault(a => a.NumeroAsiento == detalle.NumeroAsiento);
-
-            // Obtenemos el comprobante generado
             var compra = db.Compra.FirstOrDefault(c => c.ReservaId == id);
             ViewBag.Comprobante = db.Comprobante.FirstOrDefault(c => c.CompraId == compra.CompraId);
 
@@ -360,19 +307,14 @@ namespace Progra_03.Controllers
             }
             db.SaveChanges();
         }
-        // GET: /Reservas/MisReservas
         public ActionResult MisReservas()
         {
             ExpirarReservasVencidas();
             string userId = User.Identity.GetUserId();
-
-            // 1. Obtenemos las reservas directamente del modelo original
             var reservas = db.Reserva
                              .Where(r => r.UsuarioId == userId)
                              .OrderByDescending(r => r.FechaCreacion)
                              .ToList();
-
-            // 2. Creamos diccionarios para guardar los datos extra sin usar clases adicionales
             var infoVuelos = new Dictionary<int, vw_VueloDetalle>();
             var infoPasajeros = new Dictionary<int, Pasajero>();
             var infoTotales = new Dictionary<int, decimal>();
@@ -387,24 +329,16 @@ namespace Progra_03.Controllers
                     infoTotales.Add(r.ReservaId, detalle.ImporteTramo);
                 }
             }
-
-            // 3. Pasamos los diccionarios a la vista a través del ViewBag
             ViewBag.InfoVuelos = infoVuelos;
             ViewBag.InfoPasajeros = infoPasajeros;
             ViewBag.InfoTotales = infoTotales;
-
-            // Enviamos la lista original de EF
             return View(reservas);
         }
-
-        // GET: /Reservas/DescargarPDF/5
         public ActionResult DescargarPDF(int id)
         {
             var reserva = db.Reserva.Find(id);
             if (reserva == null || reserva.UsuarioId != User.Identity.GetUserId())
                 return HttpNotFound();
-
-            // Obtenemos los mismos datos del boleto
             var detalle = db.ReservaPasajeroVuelo.FirstOrDefault(d => d.ReservaId == id);
             ViewBag.Vuelo = db.vw_VueloDetalle.FirstOrDefault(v => v.VueloId == detalle.VueloId);
             ViewBag.Pasajero = db.Pasajero.FirstOrDefault(p => p.PasajeroId == detalle.PasajeroId);
@@ -412,19 +346,14 @@ namespace Progra_03.Controllers
 
             var compra = db.Compra.FirstOrDefault(c => c.ReservaId == id);
             ViewBag.Comprobante = db.Comprobante.FirstOrDefault(c => c.CompraId == compra.CompraId);
-
-            // Convertimos la vista "Boleto" en PDF
             return new ViewAsPdf("Boleto", reserva)
             {
                 FileName = "Boleto_Altevia_" + reserva.CodigoReserva + ".pdf",
                 PageSize = Rotativa.Options.Size.A4,
                 PageOrientation = Rotativa.Options.Orientation.Portrait,
-                // Este switch obliga al PDF a imprimir los fondos de color de Bootstrap
                 CustomSwitches = "--print-media-type"
             };
         }
-
-        // GET: /Reservas/Gestionar/5 (Pantalla 14)
         public ActionResult Gestionar(int id)
         {
             var reserva = db.Reserva.Find(id);
@@ -435,14 +364,10 @@ namespace Progra_03.Controllers
             ViewBag.Vuelo = db.vw_VueloDetalle.FirstOrDefault(v => v.VueloId == detalle.VueloId);
             ViewBag.Pasajero = db.Pasajero.Find(detalle.PasajeroId);
             ViewBag.Asiento = db.Asiento.FirstOrDefault(a => a.NumeroAsiento == detalle.NumeroAsiento);
-
-            // Consultamos si ya existe una compra asociada
             ViewBag.Compra = db.Compra.FirstOrDefault(c => c.ReservaId == id);
 
             return View(reserva);
         }
-
-        // POST: /Reservas/SolicitarCancelacion
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult SolicitarCancelacion(int ReservaId, string MotivoCancelacion)
@@ -464,24 +389,16 @@ namespace Progra_03.Controllers
                     var asignaciones = db.ReservaPasajeroVuelo.Where(a => a.ReservaId == ReservaId).ToList();
                     var primerDetalle = asignaciones.FirstOrDefault();
                     var vueloDetalle = db.vw_VueloDetalle.FirstOrDefault(v => v.VueloId == primerDetalle.VueloId);
-
-                    // Validar la política DP-08: Cancelaciones hasta 24 horas antes del vuelo
                     if (vueloDetalle.SalidaProgramada <= DateTime.Now.AddHours(24))
                     {
                         TempData["Error"] = "Por políticas operativas, solo se permiten cancelaciones hasta 24 horas antes del despegue.";
                         return RedirectToAction("Gestionar", new { id = ReservaId });
                     }
-
-                    // 1. Cambiar estado de la Reserva
                     reserva.EstadoReservaCodigo = "CANCELADA";
-
-                    // 2. Liberar los asientos (CANCELADA los vuelve verdes en el mapa)
                     foreach (var asig in asignaciones)
                     {
                         asig.EstadoAsignacionCodigo = "CANCELADA";
                     }
-
-                    // 3. Manejo de la Compra si estaba pagada (Generar Nota de Crédito - DP-08)
                     var compra = db.Compra.FirstOrDefault(c => c.ReservaId == ReservaId && c.EstadoCompraCodigo == "PAGADA");
                     if (compra != null)
                     {
@@ -499,7 +416,6 @@ namespace Progra_03.Controllers
                     }
                     else
                     {
-                        // Si estaba pendiente, anulamos la compra pendiente para que no pida pago futuro
                         var compraPendiente = db.Compra.FirstOrDefault(c => c.ReservaId == ReservaId && c.EstadoCompraCodigo == "PENDIENTE");
                         if (compraPendiente != null) compraPendiente.EstadoCompraCodigo = "ANULADA";
                     }

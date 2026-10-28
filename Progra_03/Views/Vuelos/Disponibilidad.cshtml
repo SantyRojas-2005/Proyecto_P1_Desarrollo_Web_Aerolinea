@@ -1,13 +1,9 @@
-﻿@model IEnumerable<Progra_03.Models.vw_EstadoAsientoVuelo>
+@model IEnumerable<Progra_03.Models.vw_EstadoAsientoVuelo>
 @{
     ViewBag.Title = "Disponibilidad de Asientos";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var vuelo = (Progra_03.Models.vw_VueloDetalle)ViewBag.Vuelo;
-
-    // Convertimos la lista en un diccionario para buscar fácilmente cada asiento en el HTML
     var dictAsientos = Model.ToDictionary(a => a.CodigoAsiento.Trim());
-
-    // Función auxiliar para obtener la clase CSS según el estado
     string GetClaseAsiento(string estado)
     {
         if (estado == "DISPONIBLE") return "asiento-disponible";
@@ -18,7 +14,7 @@
 }
 
 <div class="container mt-5 mb-5">
-    <!-- Barra de Datos del Vuelo -->
+
     <div class="card card-altevia mb-4">
         <div class="card-body p-4 d-flex justify-content-between align-items-center flex-wrap">
             <div>
@@ -32,40 +28,40 @@
         </div>
     </div>
 
-    <!-- Contenedor del Mapa del Avión -->
+
     <div class="card card-altevia mb-4 overflow-auto">
         <div class="card-body p-5 text-center" style="min-width: 800px;">
 
             <p class="text-muted small fw-bold mb-4 text-start ms-5">&larr; Proa (frente)</p>
 
-            <!-- Silueta del Avión -->
+
             <div class="d-inline-block position-relative p-4" style="border: 2px solid #e0e0e0; border-radius: 200px 50px 50px 200px; padding-left: 120px !important;">
 
-                <!-- Cabina de mando -->
+
                 <div class="position-absolute" style="left: 20px; top: 50%; transform: translateY(-50%); width: 80px; height: 100px; background-color: #f0f0f0; border-radius: 100px 20px 20px 100px; display: flex; align-items: center; justify-content: center;">
                     <span class="small text-muted" style="font-size: 0.6rem;">CABINA</span>
                 </div>
 
-                <!-- Lado Derecho (Arriba) -->
+
                 <div class="d-flex align-items-center mb-4 ms-3">
                     <span class="me-3 small text-muted fw-bold" style="width: 80px;">Lado Der (D)</span>
 
-                    <!-- Asiento 1D -->
+
                     <div class="btn @GetClaseAsiento(dictAsientos["1D"].EstadoVisual) me-2 p-3 fw-bold" style="width: 80px;">
                         1D<br><span style="font-size: 0.6rem;">@dictAsientos["1D"].EstadoVisual</span>
                     </div>
-                    <!-- Asiento 2D -->
+
                     <div class="btn @GetClaseAsiento(dictAsientos["2D"].EstadoVisual) me-4 p-3 fw-bold" style="width: 80px;">
                         2D<br><span style="font-size: 0.6rem;">@dictAsientos["2D"].EstadoVisual</span>
                     </div>
 
                     <div class="me-4 text-muted small border rounded p-2" style="background-color: #fafafa;">MESA</div>
 
-                    <!-- Asiento 3D -->
+
                     <div class="btn @GetClaseAsiento(dictAsientos["3D"].EstadoVisual) me-2 p-3 fw-bold" style="width: 80px;">
                         3D<br><span style="font-size: 0.6rem;">@dictAsientos["3D"].EstadoVisual</span>
                     </div>
-                    <!-- Asiento 4D -->
+
                     <div class="btn @GetClaseAsiento(dictAsientos["4D"].EstadoVisual) me-4 p-3 fw-bold" style="width: 80px;">
                         4D<br><span style="font-size: 0.6rem;">@dictAsientos["4D"].EstadoVisual</span>
                     </div>
@@ -73,29 +69,29 @@
                     <div class="text-muted small border rounded p-2" style="background-color: #fafafa;">BAÑO</div>
                 </div>
 
-                <!-- Pasillo Central -->
+
                 <div class="w-100 mb-4 ms-3" style="height: 30px; border-top: 2px dashed #e0e0e0; border-bottom: 2px dashed #e0e0e0; display: flex; align-items: center; justify-content: center;">
                     <span class="small text-muted letter-spacing-2">PASILLO</span>
                 </div>
 
-                <!-- Lado Izquierdo (Abajo) -->
+
                 <div class="d-flex align-items-center ms-3">
                     <span class="me-3 small text-muted fw-bold" style="width: 80px;">Lado Izq (I)</span>
 
                     <div class="me-2 text-muted small border border-dashed p-3 text-center" style="width: 80px; height: 75px;">PUERTA</div>
 
-                    <!-- Asiento 2I -->
+
                     <div class="btn @GetClaseAsiento(dictAsientos["2I"].EstadoVisual) me-4 p-3 fw-bold" style="width: 80px;">
                         2I<br><span style="font-size: 0.6rem;">@dictAsientos["2I"].EstadoVisual</span>
                     </div>
 
                     <div class="me-4 text-muted small border rounded p-2" style="background-color: #fafafa;">MESA</div>
 
-                    <!-- Asiento 3I -->
+
                     <div class="btn @GetClaseAsiento(dictAsientos["3I"].EstadoVisual) me-2 p-3 fw-bold" style="width: 80px;">
                         3I<br><span style="font-size: 0.6rem;">@dictAsientos["3I"].EstadoVisual</span>
                     </div>
-                    <!-- Asiento 4I -->
+
                     <div class="btn @GetClaseAsiento(dictAsientos["4I"].EstadoVisual) me-4 p-3 fw-bold" style="width: 80px;">
                         4I<br><span style="font-size: 0.6rem;">@dictAsientos["4I"].EstadoVisual</span>
                     </div>
@@ -104,7 +100,7 @@
                 </div>
             </div>
 
-            <!-- Leyenda de Estados -->
+
             <div class="mt-5 d-flex justify-content-center gap-4">
                 <div><span class="badge asiento-disponible p-2 border me-2">&nbsp;&nbsp;&nbsp;</span> Disponible (Verde)</div>
                 <div><span class="badge asiento-reservado p-2 border me-2">&nbsp;&nbsp;&nbsp;</span> Reservado (Morado)</div>
@@ -113,7 +109,7 @@
         </div>
     </div>
 
-    <!-- Panel Inferior y Botones -->
+
     <div class="row align-items-center">
         <div class="col-md-6 mb-3 mb-md-0">
             <div class="card bg-light border-0">

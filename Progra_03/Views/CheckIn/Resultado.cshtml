@@ -1,4 +1,4 @@
-﻿@model Progra_03.Models.ReservaPasajeroVuelo
+@model Progra_03.Models.ReservaPasajeroVuelo
 @{
     ViewBag.Title = "Confirmar Check-in";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -13,7 +13,6 @@
         <div class="col-md-8">
             <h3 class="fw-bold mb-4 text-center" style="color: var(--altevia-blue);">Verificación de Datos</h3>
 
-            <!-- Boarding Pass Preview -->
             <div class="card card-reserva border-0 overflow-hidden mb-4 shadow-sm">
                 <div class="row g-0">
                     <div class="col-md-8 p-5">
@@ -55,7 +54,6 @@
                 </div>
             </div>
 
-            <!-- Panel de Acción -->
             <div class="text-center p-4 bg-white rounded shadow-sm border-top border-3" style="border-color: var(--altevia-gold) !important;">
                 @if (ViewBag.YaHizoCheckIn)
                 {

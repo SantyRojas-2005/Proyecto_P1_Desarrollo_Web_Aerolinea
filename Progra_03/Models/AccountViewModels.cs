@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Progra_03.Models
@@ -52,10 +52,7 @@ namespace Progra_03.Models
         [Display(Name = "Nombre de usuario")]
         public string UserName { get; set; }
 
-        /*[Required]
-        [Display(Name = "Correo electrónico")]
-        [EmailAddress]
-        public string Email { get; set; }*/
+
 
         [Required]
         [DataType(DataType.Password)]

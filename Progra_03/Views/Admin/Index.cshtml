@@ -1,10 +1,15 @@
-﻿@{
+@{
+    ViewBag.Title = "Panel de Administración";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
     ViewBag.Title = "Panel de Administración";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <style>
-    /* Efecto de elevación interactiva para las tarjetas del menú */
+
     .admin-card-menu {
         transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     }
@@ -29,7 +34,7 @@
     </div>
 
     <div class="row g-4">
-        <!-- Tarjeta: Vuelos e Itinerarios -->
+
         <div class="col-md-6">
             <div class="card h-100 border-0 shadow-sm admin-card-menu position-relative">
                 <div class="card-body p-4 d-flex align-items-center">
@@ -48,7 +53,7 @@
             </div>
         </div>
 
-        <!-- Tarjeta: Gestión de Aeronaves -->
+
         <div class="col-md-6">
             <div class="card h-100 border-0 shadow-sm admin-card-menu position-relative">
                 <div class="card-body p-4 d-flex align-items-center">
@@ -67,7 +72,7 @@
             </div>
         </div>
 
-        <!-- Tarjeta: Usuarios y Reservas -->
+
         <div class="col-md-6">
             <div class="card h-100 border-0 shadow-sm admin-card-menu position-relative">
                 <div class="card-body p-4 d-flex align-items-center">
@@ -86,7 +91,7 @@
             </div>
         </div>
 
-        <!-- Tarjeta: Consultas y Reportes -->
+
         <div class="col-md-6">
             <div class="card h-100 border-0 shadow-sm admin-card-menu position-relative">
                 <div class="card-body p-4 d-flex align-items-center">

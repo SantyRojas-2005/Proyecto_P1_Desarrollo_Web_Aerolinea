@@ -1,4 +1,4 @@
-﻿@model Progra_03.Models.Pasajero
+@model Progra_03.Models.Pasajero
 @{
     ViewBag.Title = "Editar Pasajero";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -46,7 +46,6 @@
 
                             <div class="col-md-4 mt-3">
                                 <label class="form-label fw-bold text-muted small text-uppercase">Nacimiento</label>
-                                <!-- Input nativo de HTML5 para evitar errores visuales con fechas -->
                                 <input type="date" name="FechaNacimiento" class="form-control" value="@(Model.FechaNacimiento.HasValue ? Model.FechaNacimiento.Value.ToString("yyyy-MM-dd") : "")" />
                                 @Html.ValidationMessageFor(model => model.FechaNacimiento, "", new { @class = "text-danger small" })
                             </div>
@@ -64,7 +63,7 @@
 
                         <div class="mt-5 pt-3 border-top d-flex gap-3">
                             <button type="submit" class="btn btn-altevia px-5 shadow-sm">Guardar Cambios</button>
-                            <!-- El botón cancelar regresa a las pestañas -->
+
                             <a href="@Url.Action("Gestion", "Admin", new { tab = "pasajeros" })" class="btn btn-outline-secondary px-4">Cancelar</a>
                         </div>
                     }
@@ -72,4 +71,4 @@
             </div>
         </div>
     </div>
-</div>
+</div></div>

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -10,13 +10,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
     <style>
-        /* Estilos base del layout */
+
         body {
-            /* Añadir padding solo si NO estamos en la página de inicio */
+
             padding-top: @(ViewBag.Title == "Inicio" ? "0" : "90px");
         }
 
-        /* Navbar base (azul sólido para todas las páginas) */
+
         .navbar-altevia {
             background-color: var(--altevia-blue) !important;
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
@@ -24,14 +24,14 @@
             transition: all 0.4s ease;
         }
 
-        /* Navbar transparente SOLO para la página de inicio antes de hacer scroll */
+
         .navbar-altevia.navbar-transparent {
             background-color: transparent !important;
             box-shadow: none;
             padding: 20px 0;
         }
 
-        /* Navbar sólido al hacer scroll en la página de inicio */
+
         .navbar-altevia.navbar-scrolled {
             background-color: var(--altevia-blue) !important;
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
@@ -40,7 +40,7 @@
     </style>
 </head>
 <body>
-    <!-- Añadimos la clase navbar-transparent SOLO si estamos en la página de inicio -->
+
     <nav class="navbar navbar-expand-lg navbar-altevia fixed-top @(ViewBag.Title == "Inicio" ? "navbar-transparent" : "")">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center py-0" href="@Url.Action("Index", "Home")">
@@ -118,7 +118,6 @@
 
     <script>
                 $(document).ready(function () {
-                    // Solo aplicamos el efecto de scroll si la barra es transparente (es decir, en la página de inicio)
                     if ($('.navbar-altevia').hasClass('navbar-transparent')) {
                         $(window).scroll(function () {
                             if ($(window).scrollTop() > 50) {

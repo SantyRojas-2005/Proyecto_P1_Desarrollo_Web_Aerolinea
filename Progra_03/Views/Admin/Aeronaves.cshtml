@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Progra_03.Models.Aeronave>
+@model IEnumerable<Progra_03.Models.Aeronave>
 @{
     ViewBag.Title = "Gestión de Aeronaves";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -21,7 +21,6 @@
         <div class="alert alert-danger shadow-sm fw-bold"><i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["ErrorValidacion"]</div>
     }
 
-    <!-- Tabla de Flota -->
     <div class="card shadow-sm border-0">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
@@ -61,7 +60,6 @@
                             </td>
                         </tr>
 
-                        <!-- Modal de Edición de Estado -->
                         <div class="modal fade" id="modalEditar-@avion.AeronaveId" tabindex="-1" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -112,7 +110,6 @@
                             </div>
                         </div>
 
-                        <!-- Modal del Mapa de Asientos (Modo Lectura) -->
                         <div class="modal fade" id="modalMapa-@avion.AeronaveId" tabindex="-1" aria-hidden="true">
                             <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
@@ -122,22 +119,17 @@
                                     </div>
                                     <div class="modal-body p-5 text-center" style="background-color: var(--altevia-ivory);">
                                         <h6 class="text-muted text-uppercase mb-4">Cabina Embraer Phenom 300E (7 Asientos)</h6>
-                                        <!-- Representación CSS del avión -->
                                         <div class="modal-body p-4 text-center" style="background-color: var(--altevia-ivory);">
                                             <h6 class="text-muted text-uppercase mb-4 fw-bold">Cabina Embraer Phenom 300E (7 Asientos)</h6>
 
-                                            <!-- Representación del avión mejorada -->
                                             <div class="d-inline-flex align-items-center justify-content-between p-4 bg-white shadow-sm"
                                                  style="border: 2px solid #ccc; border-radius: 150px 60px 60px 150px; width: 100%; max-width: 700px; min-height: 220px;">
 
-                                                <!-- Cabina de mando (Proa) -->
                                                 <div class="text-muted small fw-bold pe-4 me-3 border-end d-flex align-items-center" style="min-height: 140px; writing-mode: vertical-rl; transform: rotate(180deg);">
                                                     CABINA DE MANDO
                                                 </div>
 
-                                                <!-- Zona de Asientos -->
                                                 <div class="d-flex flex-column justify-content-center flex-grow-1">
-                                                    <!-- Lado Derecho (Arriba) -->
                                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                                         <div class="p-3 bg-success text-white rounded shadow-sm fw-bold">1D</div>
                                                         <div class="p-3 bg-success text-white rounded shadow-sm fw-bold">2D</div>
@@ -146,10 +138,8 @@
                                                         <div class="p-3 bg-success text-white rounded shadow-sm fw-bold">4D</div>
                                                     </div>
 
-                                                    <!-- Pasillo -->
                                                     <div class="w-100 bg-light rounded text-muted py-2 mb-2" style="font-size: 0.75rem; letter-spacing: 4px;">PASILLO CENTRAL</div>
 
-                                                    <!-- Lado Izquierdo (Abajo) -->
                                                     <div class="d-flex justify-content-between align-items-center">
                                                         <div class="p-3 bg-light text-muted border border-dashed rounded small d-flex align-items-center justify-content-center" style="width: 50px; font-size: 0.75rem;">Puerta</div>
                                                         <div class="p-3 bg-success text-white rounded shadow-sm fw-bold">2I</div>
@@ -159,7 +149,6 @@
                                                     </div>
                                                 </div>
 
-                                                <!-- Cola (Baño / Equipaje) -->
                                                 <div class="text-muted small fw-bold ps-4 ms-3 border-start d-flex flex-column justify-content-between" style="min-height: 140px;">
                                                     <div class="p-2 border rounded bg-light" style="font-size: 0.7rem;">Baño</div>
                                                     <div class="p-2 border rounded bg-light mt-auto" style="font-size: 0.7rem;">Equipaje</div>

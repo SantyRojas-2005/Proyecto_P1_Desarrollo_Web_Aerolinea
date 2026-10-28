@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Progra_03.Models.vw_VueloDetalle>
+@model IEnumerable<Progra_03.Models.vw_VueloDetalle>
 @{
     ViewBag.Title = "Resultados de vuelos";
 }
@@ -6,7 +6,6 @@
 <div class="container mt-5 pt-5 mb-5">
     <h2 style="color: var(--altevia-blue);">Resultados de vuelos</h2>
 
-    <!-- Resumen de búsqueda -->
     <div class="d-flex flex-wrap align-items-center mb-4 text-muted border-bottom pb-2">
         <span class="me-3 fw-bold text-dark">
             <i class="bi bi-geo-alt-fill" style="color: var(--altevia-gold);"></i>
@@ -25,7 +24,6 @@
             <div class="card card-altevia mb-4">
                 <div class="card-body p-4">
                     <div class="row align-items-center">
-                        <!-- Detalles del Horario -->
                         <div class="col-md-5 mb-3 mb-md-0">
                             <h4 class="fw-bold mb-1" style="color: var(--altevia-blue);">
                                 @vuelo.HoraSalida.ToString(@"hh\:mm") - @vuelo.HoraLlegada.ToString(@"hh\:mm")
@@ -35,7 +33,6 @@
                             </p>
                         </div>
 
-                        <!-- Estado y Precio -->
                         <div class="col-md-3 text-md-center mb-3 mb-md-0">
                             <span class="badge bg-light text-dark border p-2 mb-2" style="font-size: 0.85rem;">
                                 Estado: @vuelo.EstadoVueloCodigo
@@ -45,7 +42,6 @@
                             </h5>
                         </div>
 
-                        <!-- Acciones -->
                         <div class="col-md-4 text-md-end">
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                 @Html.ActionLink("Consultar disponibilidad", "Disponibilidad", "Vuelos", new { id = vuelo.VueloId }, new { @class = "btn btn-outline-altevia w-100 mb-2 mb-md-0" })

@@ -1,4 +1,4 @@
-﻿@model Progra_03.Models.Reserva
+@model Progra_03.Models.Reserva
 @{
     ViewBag.Title = "Boleto Confirmado";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -9,7 +9,7 @@
 }
 
 <style>
-    /* Regla MÁGICA: Oculta el menú y el pie de página SOLO al generar el PDF */
+
     @@media print {
         nav, footer {
             display: none !important;
@@ -18,7 +18,7 @@
         body {
             padding-top: 0 !important;
         }
-        /* Oculta los botones en el PDF para que solo quede la información */
+
         .d-print-none {
             display: none !important;
         }

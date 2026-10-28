@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewBag.Title = "Datos del Pasajero";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var vuelo = (Progra_03.Models.vw_VueloDetalle)ViewBag.Vuelo;
@@ -6,7 +6,7 @@
 
 <div class="container mt-5 pt-4 mb-5">
 
-    <!-- Indicador de Pasos -->
+
     <div class="d-flex justify-content-center mb-5">
         <div class="badge bg-success p-2 px-3 me-2 fw-bold" style="font-size: 0.9rem;"><i class="bi bi-check-circle"></i> 1. Asientos</div>
         <div class="badge bg-dark p-2 px-3 me-2 fw-bold" style="font-size: 0.9rem;">2. Pasajeros</div>
@@ -15,7 +15,7 @@
     </div>
 
     <div class="row">
-        <!-- Formulario del Pasajero -->
+
         <div class="col-md-8 mb-4">
             <div class="card card-reserva border-0">
                 <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
@@ -23,7 +23,7 @@
                 </div>
                 <div class="card-body p-4 px-5">
 
-                    <!-- Mensaje de Error desde el Servidor (Ej: Cédula inválida) -->
+
                     @if (ViewBag.ErrorValidacion != null)
                     {
                         <div class="alert alert-danger fw-bold border-0 shadow-sm" style="background-color: #f8d7da; color: #721c24;">
@@ -31,7 +31,7 @@
                         </div>
                     }
 
-                    <!-- Formulario con validación Bootstrap -->
+
                     @using (Html.BeginForm("Confirmar", "Reservas", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
                     {
                         @Html.AntiForgeryToken()
@@ -49,18 +49,18 @@
                             </div>
                             <div class="col-md-8">
                                 <label class="form-label fw-bold">Número de documento <span class="text-danger">*</span></label>
-                                <!-- Restricción: Solo números (0-9) -->
+
                                 <input type="text" name="NumeroDocumento" class="form-control" required placeholder="Ej: 17xxxxxx" value="@ViewBag.NumeroDocumento" pattern="[0-9]+" title="Solo se permiten números" maxlength="15" />
                             </div>
 
                             <div class="col-md-6 mt-4">
                                 <label class="form-label fw-bold">Nombres <span class="text-danger">*</span></label>
-                                <!-- Restricción: Solo letras y espacios -->
+
                                 <input type="text" name="Nombres" class="form-control" required value="@ViewBag.Nombres" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+" title="Solo se permiten letras" />
                             </div>
                             <div class="col-md-6 mt-4">
                                 <label class="form-label fw-bold">Apellidos <span class="text-danger">*</span></label>
-                                <!-- Restricción: Solo letras y espacios -->
+
                                 <input type="text" name="Apellidos" class="form-control" required value="@ViewBag.Apellidos" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+" title="Solo se permiten letras" />
                             </div>
 
@@ -70,12 +70,12 @@
                             </div>
                             <div class="col-md-4 mt-4">
                                 <label class="form-label fw-bold">Correo <span class="text-muted fw-normal">(Opcional)</span></label>
-                                <!-- Restricción: Formato estándar de correo -->
+
                                 <input type="email" name="Correo" class="form-control" placeholder="correo@ejemplo.com" value="@ViewBag.Correo" pattern="[a-zA-Z0-9._%+-]+[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" title="Ingrese un correo electrónico válido" />
                             </div>
                             <div class="col-md-4 mt-4">
                                 <label class="form-label fw-bold">Teléfono <span class="text-muted fw-normal">(Opcional)</span></label>
-                                <!-- Restricción: Exactamente 10 números -->
+
                                 <input type="tel" name="Telefono" class="form-control" placeholder="Ej: 0999999999" value="@ViewBag.Telefono" pattern="[0-9]{10}" title="Debe contener exactamente 10 números" maxlength="10" />
                             </div>
                         </div>
@@ -89,7 +89,7 @@
             </div>
         </div>
 
-        <!-- Resumen Lateral -->
+
         <div class="col-md-4">
             <div class="card card-reserva bg-light border-0 p-2">
                 <div class="card-header bg-transparent border-0 pt-4">

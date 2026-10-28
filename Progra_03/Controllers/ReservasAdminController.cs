@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -14,15 +14,11 @@ namespace Progra_03.Controllers
     public class ReservasAdminController : Controller
     {
         private AerolineaVIPContext db = new AerolineaVIPContext();
-
-        // GET: Reservasadmin
         public ActionResult Index()
         {
             var reserva = db.Reserva.Include(r => r.EstadoReserva);
             return View(reserva.ToList());
         }
-
-        // GET: Reservasadmin/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -36,17 +32,11 @@ namespace Progra_03.Controllers
             }
             return View(reserva);
         }
-
-        // GET: Reservasadmin/Create
         public ActionResult Create()
         {
             ViewBag.EstadoReservaCodigo = new SelectList(db.EstadoReserva, "Codigo", "Descripcion");
             return View();
         }
-
-        // POST: Reservasadmin/Create
-        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
-        // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ReservaId,CodigoReserva,UsuarioId,FechaCreacion,FechaExpiracion,EstadoReservaCodigo")] Reserva reserva)
@@ -61,8 +51,6 @@ namespace Progra_03.Controllers
             ViewBag.EstadoReservaCodigo = new SelectList(db.EstadoReserva, "Codigo", "Descripcion", reserva.EstadoReservaCodigo);
             return View(reserva);
         }
-
-        // GET: Reservasadmin/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -77,10 +65,6 @@ namespace Progra_03.Controllers
             ViewBag.EstadoReservaCodigo = new SelectList(db.EstadoReserva, "Codigo", "Descripcion", reserva.EstadoReservaCodigo);
             return View(reserva);
         }
-
-        // POST: Reservasadmin/Edit/5
-        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
-        // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ReservaId,CodigoReserva,UsuarioId,FechaCreacion,FechaExpiracion,EstadoReservaCodigo")] Reserva reserva)
@@ -94,8 +78,6 @@ namespace Progra_03.Controllers
             ViewBag.EstadoReservaCodigo = new SelectList(db.EstadoReserva, "Codigo", "Descripcion", reserva.EstadoReservaCodigo);
             return View(reserva);
         }
-
-        // GET: Reservasadmin/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -109,8 +91,6 @@ namespace Progra_03.Controllers
             }
             return View(reserva);
         }
-
-        // POST: Reservasadmin/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)

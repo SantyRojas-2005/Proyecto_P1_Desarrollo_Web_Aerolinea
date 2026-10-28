@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Progra_03.Models.vw_ComprobanteDetalle>
+@model IEnumerable<Progra_03.Models.vw_ComprobanteDetalle>
 @{
     ViewBag.Title = "Mis Comprobantes";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -9,7 +9,7 @@
         <h3 class="fw-bold mb-0" style="color: var(--altevia-blue);"><i class="bi bi-receipt-cutoff me-2"></i>Mis Comprobantes y Facturas</h3>
     </div>
 
-    <!-- Filtros de Búsqueda -->
+
     <div class="card bg-light border-0 shadow-sm mb-4">
         <div class="card-body p-4">
             <form method="get" action="@Url.Action("Index")" class="row g-3 align-items-end">
@@ -38,7 +38,7 @@
         </div>
     </div>
 
-    <!-- Tabla Historial -->
+
     <div class="card shadow-sm border-0 mb-4">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
@@ -72,7 +72,7 @@
                                 </td>
                                 <td class="text-end">
                                     <a href="@Url.Action("Index", new { idPreview = item.ComprobanteId, desde = ViewBag.Desde, hasta = ViewBag.Hasta, tipo = ViewBag.Tipo })" class="btn btn-sm btn-outline-secondary me-1">Visualizar</a>
-                                    <!-- Reutilizamos tu generador PDF de Rotativa apuntándolo a la reserva -->
+
                                     <a href="@Url.Action("DescargarPDF", "Reservas", new { id = item.ReservaId })" class="btn btn-sm btn-danger shadow-sm"><i class="bi bi-file-pdf-fill"></i> Descargar PDF</a>
                                 </td>
                             </tr>
@@ -87,7 +87,7 @@
         </div>
     </div>
 
-    <!-- PANEL DE VISTA PREVIA (Aparece al dar clic en Visualizar) -->
+
     @if (ViewBag.Preview != null)
     {
         var p = (Progra_03.Models.vw_ComprobanteDetalle)ViewBag.Preview;
@@ -151,7 +151,7 @@
                     </table>
                 </div>
 
-                <!-- Advertencia Académica (DP-05) -->
+
                 <div class="alert alert-info border-0 shadow-sm mb-0 d-flex align-items-center" style="background-color: rgba(212, 175, 55, 0.1); color: var(--altevia-blue);">
                     <i class="bi bi-info-circle-fill fs-3 me-3" style="color: var(--altevia-gold);"></i>
                     <p class="mb-0 small fw-bold"><strong>Información:</strong> @p.LeyendaComprobante</p>
@@ -160,7 +160,6 @@
         </div>
 
         <script>
-            // Pequeño script para hacer autoscroll hacia la vista previa al cargar
             window.onload = function() {
                 document.getElementById("vista-previa").scrollIntoView({ behavior: 'smooth' });
             };

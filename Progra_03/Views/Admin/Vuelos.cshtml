@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Progra_03.Models.vw_VueloDetalle>
+@model IEnumerable<Progra_03.Models.vw_VueloDetalle>
 @{
     ViewBag.Title = "Vuelos e Itinerarios";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -18,7 +18,6 @@
         <div class="alert alert-danger shadow-sm fw-bold"><i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["ErrorValidacion"]</div>
     }
 
-    <!-- Pestañas Administrativas Funcionales -->
     <ul class="nav nav-tabs mb-4" id="vuelosTabs" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active fw-bold text-white border-0" id="vuelos-tab" data-bs-toggle="tab" data-bs-target="#vuelos" type="button" role="tab" style="background-color: var(--altevia-blue);">Vuelos por fecha</button>
@@ -31,18 +30,14 @@
         </li>
     </ul>
 
-    <!-- Contenedor de las Pestañas -->
     <div class="tab-content" id="vuelosTabsContent">
 
-        <!-- 1. PESTAÑA VUELOS POR FECHA -->
         <div class="tab-pane fade show active" id="vuelos" role="tabpanel">
 
-            <!-- Barra de Filtros y Acciones -->
             <div class="card bg-light border-0 shadow-sm mb-4">
                 <div class="card-body">
                     <div class="row align-items-end g-3">
 
-                        <!-- Filtro de Búsqueda (GET) -->
                         <div class="col-md-5 border-end pe-4">
                             <form method="get" action="@Url.Action("Vuelos")" class="row g-2">
                                 <div class="col-5">
@@ -59,7 +54,6 @@
                             </form>
                         </div>
 
-                        <!-- Formulario de Generación de Vuelos (POST) -->
                         <div class="col-md-7 ps-4">
                             <form method="post" action="@Url.Action("GenerarVuelos")" class="row g-2 align-items-end" onsubmit="return confirm('¿Seguro que desea generar la programación para este rango de fechas?');">
                                 @Html.AntiForgeryToken()
@@ -80,7 +74,6 @@
                 </div>
             </div>
 
-            <!-- Tabla de Vuelos -->
             <div class="card shadow-sm border-0">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
@@ -124,12 +117,12 @@
                                     { <span class="badge bg-light border text-dark">@vuelo.EstadoVueloCodigo</span>}
                                         </td>
                                         <td class="text-end">
-                                            <!-- Botón para abrir el Modal de Edición -->
+
                                             <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalEditar-@vuelo.VueloId">Editar</button>
                                         </td>
                                     </tr>
 
-                                    <!-- Modal de Edición Específico por Fila -->
+
                                     <div class="modal fade" id="modalEditar-@vuelo.VueloId" tabindex="-1" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
@@ -186,8 +179,7 @@
                     </table>
                 </div>
             </div>
-        </div> <!-- FIN PESTAÑA VUELOS -->
-        <!-- 2. PESTAÑA FRECUENCIAS -->
+        </div>
         <div class="tab-pane fade bg-white p-4 shadow-sm border rounded" id="frecuencias" role="tabpanel">
             <h5 class="fw-bold mb-3 text-dark">Matriz de Frecuencias Operativas</h5>
             <table class="table table-hover align-middle">
@@ -208,7 +200,6 @@
             </table>
         </div>
 
-        <!-- 3. PESTAÑA ITINERARIOS -->
         <div class="tab-pane fade bg-white p-4 shadow-sm border rounded" id="itinerarios" role="tabpanel">
             <h5 class="fw-bold mb-3 text-dark">Itinerarios y Escalas</h5>
             <table class="table table-hover align-middle">
@@ -228,8 +219,8 @@
             </table>
         </div>
 
-    </div> <!-- FIN TAB CONTENT -->
-</div> <!-- FIN CONTAINER -->
+    </div>
+</div>
 
 @section Scripts {
     <script>

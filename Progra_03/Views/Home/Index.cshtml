@@ -1,9 +1,9 @@
-﻿@{
+@{
     ViewBag.Title = "Home Page";
 }
 
 
-<!-- Hero Section (Pantalla Completa) -->
+
 <div style="background: linear-gradient(to bottom, rgba(11, 27, 61, 0.4), rgba(11, 27, 61, 0.8)), url('https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=2000&auto=format&fit=crop') no-repeat center center / cover; height: 90vh; display: flex; align-items: center; position: relative;">
     <div class="container text-center text-white" style="margin-top: -50px;">
         <p style="font-family: 'Montserrat', sans-serif; letter-spacing: 6px; font-size: 0.8rem; color: var(--altevia-gold);" class="mb-3 text-uppercase">Vuelos Chárter</p>
@@ -17,15 +17,15 @@
     </div>
 </div>
 
-<!-- Tarjeta de Reserva Flotante -->
+
 <div id="reservar" class="container" style="margin-top: -120px; position: relative; z-index: 10;">
     <div class="row justify-content-center">
         <div class="col-lg-11">
             <div class="card card-reserva p-2">
                 <div class="card-body p-5">
 
-                    <!-- Selectores de viaje -->
-                    
+
+
 
                     @using (Html.BeginForm("Buscar", "Vuelos", FormMethod.Get, new { @class = "row g-4 align-items-end" }))
                     {
@@ -65,7 +65,7 @@
     </div>
 </div>
 
-<!-- Propuesta de Valor -->
+
 <div class="container section-padding text-center">
     <div class="row">
         <div class="col-md-4 mb-5 mb-md-0 px-4">
@@ -86,14 +86,14 @@
     </div>
 </div>
 
-<!-- Sección Flota (Azul Noche) -->
+
 <div class="bg-dark-blue section-padding text-center">
     <div class="container">
         <p style="font-family: 'Montserrat', sans-serif; letter-spacing: 4px; font-size: 0.75rem; color: var(--altevia-gold);" class="mb-3 text-uppercase">Nuestra Flota</p>
         <h2 class="mb-5 fw-light" style="letter-spacing: 2px;">Embraer Phenom 300E</h2>
         <div class="row justify-content-center">
             <div class="col-lg-8">
-                <!-- Placeholder para la imagen del avión (URL actualizada y estable) -->
+
                 <div style="height: 350px; background: url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=1200&auto=format&fit=crop') no-repeat center center / cover; border-radius: 2px; margin-bottom: 40px;"></div>
                 <div class="row text-white text-start">
                     <div class="col-4 border-end border-secondary">
