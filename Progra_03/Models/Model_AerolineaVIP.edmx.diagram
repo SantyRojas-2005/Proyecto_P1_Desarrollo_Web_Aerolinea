@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="7a4905d514a54494a18083823b5fa4af" Name="Diagram1">
+        <EntityTypeShape EntityType="AerolineaVIPEntity.Aeronave" Width="1.5" PointX="5.25" PointY="9.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.Aeropuerto" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.Asiento" Width="1.5" PointX="5.25" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.CheckIn" Width="1.5" PointX="12" PointY="1.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.Compra" Width="1.5" PointX="9.75" PointY="19" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.Comprobante" Width="1.5" PointX="12" PointY="19.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.DatosEmisor" Width="1.5" PointX="11.75" PointY="8.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.EstadoAeronave" Width="1.5" PointX="3" PointY="8.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.EstadoAsignacion" Width="1.5" PointX="7.5" PointY="8.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.EstadoCheckIn" Width="1.5" PointX="9.75" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.EstadoCompra" Width="1.5" PointX="7.5" PointY="23.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.EstadoComprobante" Width="1.5" PointX="9.75" PointY="15.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.EstadoItinerario" Width="1.5" PointX="8.25" PointY="12.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.EstadoPago" Width="1.5" PointX="12.75" PointY="16.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.EstadoReserva" Width="1.5" PointX="5.25" PointY="19.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.EstadoVuelo" Width="1.5" PointX="5.25" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.Frecuencia" Width="1.5" PointX="5.25" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.Itinerario" Width="1.5" PointX="10.5" PointY="11.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.MarcaTarjeta" Width="1.5" PointX="12.75" PointY="23.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.MetodoPago" Width="1.5" PointX="12.75" PointY="26.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.ModeloAeronave" Width="1.5" PointX="3" PointY="10.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.Moneda" Width="1.5" PointX="7.5" PointY="26" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.Pago" Width="1.5" PointX="15" PointY="18.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.Pasajero" Width="1.5" PointX="7.5" PointY="15.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.Reserva" Width="1.5" PointX="7.5" PointY="19.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.ReservaPasajeroVuelo" Width="1.5" PointX="9.75" PointY="4.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.Ruta" Width="1.5" PointX="3" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.TipoComprobante" Width="1.5" PointX="9.75" PointY="24" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.TipoDocumentoIdentidad" Width="1.5" PointX="5.25" PointY="16.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.TramoItinerario" Width="1.5" PointX="12.75" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.Vuelo" Width="1.5" PointX="7.5" PointY="4.5" IsExpanded="true" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_Aeronave_Estado" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_Aeronave_Modelo" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_Vuelo_Aeronave" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_Ruta_Destino" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_Ruta_Origen" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_Asiento_Modelo" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_CheckIn_Asignacion" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_CheckIn_Estado" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_Compra_Estado" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_Compra_Moneda" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_Compra_Reserva" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_Comprobante_Compra" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_Pago_Compra" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_Comprobante_Estado" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_Comprobante_Tipo" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_RPV_Estado" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_Itinerario_Estado" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_Pago_Estado" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_Reserva_Estado" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_Vuelo_Estado" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_Frecuencia_Ruta" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_Vuelo_Frecuencia" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_Tramo_Itinerario" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_Pago_Marca" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_Pago_Metodo" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_Pasajero_TipoDocumento" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_RPV_Pasajero" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_RPV_Reserva" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_RPV_Vuelo" ManuallyRouted="false" />
+        <AssociationConnector Association="AerolineaVIPEntity.FK_Tramo_Vuelo" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.vw_AsientoAeronave" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.vw_ComprobanteDetalle" Width="1.5" PointX="0.75" PointY="14.75" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.vw_DisponibilidadVuelo" Width="1.5" PointX="13.75" PointY="11.75" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.vw_EstadoAsientoVuelo" Width="1.5" PointX="14.75" PointY="0.75" />
+        <EntityTypeShape EntityType="AerolineaVIPEntity.vw_VueloDetalle" Width="1.5" PointX="2.75" PointY="14.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

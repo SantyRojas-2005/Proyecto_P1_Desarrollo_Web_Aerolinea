@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff0b5"/>
+      <stop offset="0.22" stop-color="#f4d27d"/>
+      <stop offset="0.48" stop-color="#c58a2c"/>
+      <stop offset="0.68" stop-color="#ffe7a0"/>
+      <stop offset="1" stop-color="#b87920"/>
+    </linearGradient>
+    <linearGradient id="goldLight" x1="0" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="#fff2c7"/>
+      <stop offset="0.45" stop-color="#f1cf7c"/>
+      <stop offset="1" stop-color="#d49b3e"/>
+    </linearGradient>
+    <linearGradient id="ivory" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#e8e9ed"/>
+    </linearGradient>
+  </defs>
+  <!-- Stylized A monogram -->
+  <g stroke-linejoin="round" stroke-linecap="round">
+    <path d="M 493,526 L 651,220 L 705,117 L 830,377 L 765,397 L 680,235 L 532,503 Z" fill="url(#goldLight)"/>
+    <path d="M 700,408 L 772,390 L 830,514 C 852,559 887,589 939,607 C 969,617 1002,621 1038,620 L 982,641 C 921,646 875,627 843,588 C 821,561 804,524 790,490 Z" fill="url(#gold)"/>
+    <!-- Sweeping flight path -->
+    <path d="M 420,635 C 455,554 517,510 610,475 L 1025,304 C 1063,288 1093,267 1115,244 L 1083,245 L 1119,227 L 1150,227 L 1130,258 L 1124,231 C 1094,267 1057,294 1015,314 L 595,514 C 505,557 455,601 420,635 Z" fill="url(#goldLight)"/>
+    <path d="M 522,635 C 575,567 642,526 735,482 L 900,405 C 836,455 768,497 692,541 C 621,582 566,614 522,635 Z" fill="url(#gold)"/>
+    <!-- Small ascending jet -->
+    <path d="M 1097,244 L 1144,218 L 1190,188 C 1200,181 1210,180 1220,181 L 1174,214 L 1143,244 L 1127,284 L 1117,264 L 1097,244 Z" fill="url(#goldLight)"/>
+  </g>
+  <!-- Wordmark: designed as clean vector type -->
+  <text x="800" y="846" text-anchor="middle" font-family="Inter Display, Lato, sans-serif" font-size="126" font-weight="300" letter-spacing="23" fill="url(#ivory)">ALTÉVIA</text>
+  <g fill="url(#goldLight)">
+    <rect x="246" y="917" width="124" height="3"/>
+    <rect x="1230" y="917" width="124" height="3"/>
+  </g>
+  <text x="800" y="930" text-anchor="middle" font-family="Inter Display, Lato, sans-serif" font-size="34" font-weight="300" letter-spacing="13" fill="url(#goldLight)">BEYOND THE HORIZON</text>
+</svg>

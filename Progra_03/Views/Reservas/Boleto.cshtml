@@ -1,0 +1,75 @@
+﻿@model Progra_03.Models.Reserva
+@{
+    ViewBag.Title = "Boleto Confirmado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var vuelo = (Progra_03.Models.vw_VueloDetalle)ViewBag.Vuelo;
+    var pasajero = (Progra_03.Models.Pasajero)ViewBag.Pasajero;
+    var asiento = (Progra_03.Models.Asiento)ViewBag.Asiento;
+    var comprobante = (Progra_03.Models.Comprobante)ViewBag.Comprobante;
+}
+
+<style>
+    /* Regla MÁGICA: Oculta el menú y el pie de página SOLO al generar el PDF */
+    @@media print {
+        nav, footer {
+            display: none !important;
+        }
+
+        body {
+            padding-top: 0 !important;
+        }
+        /* Oculta los botones en el PDF para que solo quede la información */
+        .d-print-none {
+            display: none !important;
+        }
+    }
+</style>
+
+<div class="container mt-5 pt-5 mb-5 text-center">
+
+    <div class="mb-4">
+        <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+        <h2 class="fw-bold mt-3" style="color: var(--altevia-blue);">¡Pago Exitoso!</h2>
+        <p class="text-muted fs-5">Su reserva ha sido confirmada y su asiento está asegurado.</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card card-reserva border-0 shadow-sm text-start mb-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold text-uppercase mb-4" style="color: var(--altevia-gold); border-bottom: 1px solid #eee; padding-bottom: 10px;">Detalles de la Operación</h5>
+
+                    <div class="row mb-3">
+                        <div class="col-6 text-muted">Código de Reserva:</div>
+                        <div class="col-6 fw-bold text-end">#@Model.ReservaId.ToString("D6")</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6 text-muted">N° Comprobante:</div>
+                        <div class="col-6 fw-bold text-end">@comprobante.NumeroComprobante</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6 text-muted">Pasajero:</div>
+                        <div class="col-6 fw-bold text-end">@pasajero.Nombres @pasajero.Apellidos</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6 text-muted">Vuelo:</div>
+                        <div class="col-6 fw-bold text-end">@vuelo.CodigoVuelo (@vuelo.CiudadOrigen &rarr; @vuelo.CiudadDestino)</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6 text-muted">Asiento:</div>
+                        <div class="col-6 fw-bold text-end" style="color: var(--altevia-blue);">@asiento.Codigo</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 d-print-none">
+                <a href="@Url.Action("DescargarPDF", "Reservas", new { id = Model.ReservaId })" class="btn btn-danger py-3 fw-bold shadow-sm">
+                    <i class="bi bi-file-earmark-pdf-fill me-2"></i> Descargar Comprobante PDF
+                </a>
+                <a href="@Url.Action("Index", "Home")" class="btn btn-outline-gold py-3 fw-bold mt-2">
+                    Volver al Inicio
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

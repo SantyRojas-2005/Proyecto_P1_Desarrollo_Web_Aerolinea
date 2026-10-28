@@ -1,0 +1,49 @@
+﻿@model Progra_03.Models.Reserva
+@{
+    ViewBag.Title = "Detalles de Reserva";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5 pt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card card-reserva border-0 shadow-sm">
+                <div class="card-header bg-light py-3 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold" style="color: var(--altevia-blue);"><i class="bi bi-info-square me-2"></i>Detalle de Operación</h5>
+                    @if (Model.EstadoReservaCodigo == "CONFIRMADA")
+                    {<span class="badge bg-success fs-6">@Model.EstadoReservaCodigo</span> }
+                else if (Model.EstadoReservaCodigo == "PENDIENTE")
+                { <span class="badge bg-warning text-dark fs-6">@Model.EstadoReservaCodigo</span> }
+            else
+            { <span class="badge bg-danger fs-6">@Model.EstadoReservaCodigo</span>}
+                </div>
+                <div class="card-body p-5">
+
+                    <div class="row mb-4 border-bottom pb-3">
+                        <div class="col-sm-4 text-muted fw-bold text-uppercase small">Código de Reserva</div>
+                        <div class="col-sm-8 fw-bold fs-4 text-dark">@Model.CodigoReserva</div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-sm-4 text-muted fw-bold text-uppercase small">Usuario Creador (ID)</div>
+                        <div class="col-sm-8 text-break">@Model.UsuarioId</div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-sm-4 text-muted fw-bold text-uppercase small">Fecha de Creación</div>
+                        <div class="col-sm-8">@Model.FechaCreacion.ToString("dd/MM/yyyy HH:mm:ss")</div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-sm-4 text-muted fw-bold text-uppercase small">Fecha de Expiración</div>
+                        <div class="col-sm-8">
+                            @(Model.FechaExpiracion.HasValue ? Model.FechaExpiracion.Value.ToString("dd/MM/yyyy HH:mm:ss") : "Sin fecha de expiración asignada")
+                        </div>
+                    </div>
+
+                    <div class="mt-5 pt-4 border-top d-flex gap-3">
+                        <a href="@Url.Action("Edit", new { id = Model.ReservaId })" class="btn btn-altevia px-5 shadow-sm"><i class="bi bi-pencil me-2"></i>Editar Estado</a>
+                        <a href="@Url.Action("Gestion", "Admin", new { tab = "reservas" })" class="btn btn-outline-secondary px-4">Volver al Panel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

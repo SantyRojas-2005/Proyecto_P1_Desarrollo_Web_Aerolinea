@@ -1,0 +1,111 @@
+﻿@model IEnumerable<Progra_03.Models.vw_DisponibilidadVuelo>
+@{
+    ViewBag.Title = "Consultas y Reportes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5 pt-4 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold mb-0" style="color: var(--altevia-blue);">Consultas y Reportes Administrativos</h3>
+    </div>
+
+    <!-- Panel de Consulta -->
+    <div class="card bg-white border shadow-sm mb-4">
+        <div class="card-body p-4">
+            <form method="get" action="@Url.Action("Reportes")">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold small text-muted text-uppercase">Consulta <span class="text-danger">*</span></label>
+                        <select class="form-select border-primary">
+                            <option value="ocupacion" selected>Ocupación por vuelo</option>
+                            <option value="reservas" disabled>Reservas por estado</option>
+                            <option value="pagos" disabled>Compras y pagos simulados</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold small text-muted text-uppercase">Fecha desde <span class="text-danger">*</span></label>
+                        <input type="date" name="desde" class="form-control" value="@ViewBag.Desde" required />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold small text-muted text-uppercase">Fecha hasta <span class="text-danger">*</span></label>
+                        <input type="date" name="hasta" class="form-control" value="@ViewBag.Hasta" required />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold small text-muted text-uppercase">Ruta (opcional)</label>
+                        <select class="form-select"><option>Todas</option></select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold small text-muted text-uppercase">Aeronave (opcional)</label>
+                        <select class="form-select"><option>Todas</option></select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold small text-muted text-uppercase">Estado (opcional)</label>
+                        <select class="form-select"><option>Todos</option></select>
+                    </div>
+
+                    <div class="col-12 mt-4 d-flex gap-2">
+                        <button type="submit" class="btn btn-altevia px-4 fw-bold">Consultar</button>
+                        <button type="submit" class="btn btn-outline-dark px-4">Actualizar resultados</button>
+                        <button type="button" class="btn btn-outline-secondary px-4 ms-auto border-dashed" disabled>Exportar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Resultados -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-light border-bottom d-flex justify-content-between py-3">
+            <span class="small fw-bold text-muted"><i class="bi bi-clock-history me-1"></i> Datos con corte al @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</span>
+            <span class="small text-muted">Disponibles = Capacidad - Ocupados (asientos reservados u ocupados)</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light small text-uppercase text-muted">
+                    <tr>
+                        <th>Vuelo</th>
+                        <th>Fecha</th>
+                        <th>Ruta</th>
+                        <th>Aeronave</th>
+                        <th class="text-center bg-light">Capacidad</th>
+                        <th class="text-center text-danger">Ocupados</th>
+                        <th class="text-center text-success">Disponibles</th>
+                        <th class="text-end">Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var row in Model)
+                        {
+                            <tr>
+                                <td class="fw-bold">@row.CodigoVuelo</td>
+                                <td>@row.FechaOperacion.ToString("dd/MM/yyyy")</td>
+                                <td>@row.Origen &rarr; @row.Destino</td>
+                                <td><span class="badge bg-dark">@(string.IsNullOrEmpty(row.Matricula) ? "SIN ASIGNAR" : row.Matricula)</span></td>
+                                <td class="text-center bg-light fw-bold">@row.Capacidad</td>
+                                <td class="text-center text-danger fw-bold fs-6">@row.Ocupados</td>
+                                <td class="text-center text-success fw-bold fs-6">@row.Disponibles</td>
+                                <td class="text-end">
+                                    @if (row.EstadoVueloCodigo == "CONFIRMADO" || row.EstadoVueloCodigo == "COMPLETADO")
+                                    {
+                                        <span class="badge bg-success">@row.EstadoVueloCodigo</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">@row.EstadoVueloCodigo</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="8" class="text-center py-5 text-muted">No hay resultados para los filtros seleccionados.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

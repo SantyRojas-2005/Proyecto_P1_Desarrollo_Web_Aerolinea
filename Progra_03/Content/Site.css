@@ -1,0 +1,204 @@
+﻿/* =========================================
+   1. IMPORTACIONES Y VARIABLES GLOBALES
+========================================= */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Open+Sans:wght@300;400;600&display=swap');
+
+:root {
+    --altevia-blue: #0B1B3D;
+    --altevia-blue-dark: #071231;
+    --altevia-gold: #C9A96E;
+    --altevia-gold-hover: #b5952f;
+    --altevia-ivory: #F7F4EC;
+    --altevia-steel: #3C4B6E;
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: var(--altevia-ivory);
+    color: var(--altevia-steel);
+    padding-top: 0; /* Eliminado para que el Hero toque el borde superior */
+}
+
+h1, h2, h3, h4, h5, h6, .navbar-brand {
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Reemplazar el rojo de Bootstrap por dorado oscuro para asteriscos y errores */
+.text-danger {
+    color: #b5952f !important;
+}
+
+/* =========================================
+   2. NAVBAR ALTÉVIA (Transparente a Sólido)
+========================================= */
+.navbar-altevia {
+    background-color: transparent !important;
+    transition: background-color 0.4s ease, box-shadow 0.4s ease;
+    padding: 20px 0;
+}
+
+/* Clase que se añade con jQuery al hacer scroll */
+.navbar-scrolled {
+    background-color: var(--altevia-blue) !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    padding: 10px 0;
+}
+
+.navbar-altevia .nav-link {
+    color: #ffffff !important;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: 2px;
+    margin: 0 10px;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+    /* Subrayado fino dorado en Hover */
+    .navbar-altevia .nav-link::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 1px;
+        display: block;
+        margin-top: 5px;
+        right: 0;
+        background: var(--altevia-gold);
+        transition: width 0.3s ease;
+    }
+
+    .navbar-altevia .nav-link:hover::after {
+        width: 100%;
+        left: 0;
+        background: var(--altevia-gold);
+    }
+
+.navbar-altevia .navbar-toggler {
+    border: none;
+    color: var(--altevia-gold);
+}
+
+/* =========================================
+   3. BOTONES PREMIUM
+========================================= */
+.btn-altevia {
+    background-color: var(--altevia-gold) !important;
+    color: #ffffff !important;
+    border: none;
+    text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 0.75rem;
+    padding: 15px 35px;
+    border-radius: 2px !important;
+    letter-spacing: 2px;
+    transition: all 0.4s ease;
+}
+
+    .btn-altevia:hover {
+        background-color: var(--altevia-gold-hover) !important;
+        box-shadow: 0 8px 25px rgba(201, 169, 110, 0.3);
+    }
+
+.btn-outline-gold {
+    background-color: transparent;
+    color: var(--altevia-gold) !important;
+    border: 1px solid var(--altevia-gold) !important;
+    text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 0.75rem;
+    padding: 12px 30px;
+    border-radius: 2px !important;
+    letter-spacing: 2px;
+    transition: all 0.4s ease;
+}
+
+    .btn-outline-gold:hover {
+        background-color: var(--altevia-gold) !important;
+        color: #ffffff !important;
+    }
+
+/* =========================================
+   4. TARJETA DE RESERVA MINIMALISTA
+========================================= */
+.card-reserva {
+    border-radius: 2px !important;
+    box-shadow: 0 20px 40px rgba(11, 27, 61, 0.05) !important;
+    border: none !important;
+    border-top: 2px solid var(--altevia-gold) !important;
+    background-color: #ffffff;
+}
+
+.form-control, .form-select {
+    border: none;
+    border-bottom: 1px solid #e0e0e0;
+    border-radius: 0px;
+    padding: 12px 5px;
+    background-color: transparent;
+    box-shadow: none !important;
+    color: var(--altevia-blue);
+    font-family: 'Open Sans', sans-serif;
+}
+
+    .form-control:focus, .form-select:focus {
+        border-bottom: 1px solid var(--altevia-gold);
+        background-color: transparent;
+    }
+
+.form-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--altevia-steel);
+    margin-bottom: 0px;
+}
+
+/* =========================================
+   5. SECCIONES Y ESPACIADOS
+========================================= */
+.section-padding {
+    padding: 120px 0;
+}
+
+.bg-dark-blue {
+    background-color: var(--altevia-blue-dark);
+    color: var(--altevia-ivory);
+}
+
+.icon-gold {
+    color: var(--altevia-gold);
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+/* =========================================
+   COLORES ESTRICTOS PARA MAPA DE ASIENTOS
+========================================= */
+.asiento-disponible {
+    background-color: #28a745 !important;
+    color: white !important;
+    border: none !important;
+}
+
+.asiento-ocupado {
+    background-color: #dc3545 !important;
+    color: white !important;
+    cursor: not-allowed;
+    border: none !important;
+}
+
+.asiento-reservado {
+    background-color: #6f42c1 !important;
+    color: white !important;
+    cursor: not-allowed;
+    border: none !important;
+}
+
+.asiento-seleccionado {
+    background-color: #000000 !important;
+    color: white !important;
+    border: 2px solid #D4AF37 !important;
+}

@@ -1,0 +1,90 @@
+﻿@model Progra_03.Models.Reserva
+@{
+    ViewBag.Title = "Resumen de Reserva";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var vuelo = (Progra_03.Models.vw_VueloDetalle)ViewBag.Vuelo;
+    var pasajero = (Progra_03.Models.Pasajero)ViewBag.Pasajero;
+    var asiento = (Progra_03.Models.Asiento)ViewBag.Asiento;
+}
+
+<div class="container mt-5 pt-4 mb-5">
+
+    <!-- Indicador de Pasos -->
+    <div class="d-flex justify-content-center mb-5">
+        <div class="badge bg-success p-2 px-3 me-2 fw-bold" style="font-size: 0.9rem;"><i class="bi bi-check-circle"></i> 1. Asientos</div>
+        <div class="badge bg-success p-2 px-3 me-2 fw-bold" style="font-size: 0.9rem;"><i class="bi bi-check-circle"></i> 2. Pasajeros</div>
+        <div class="badge bg-dark p-2 px-3 me-2 fw-bold" style="font-size: 0.9rem;">3. Reserva</div>
+        <div class="badge bg-light text-muted border p-2 px-3" style="font-size: 0.9rem;">4. Pago</div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="alert alert-success bg-white border-success border-start border-5 shadow-sm p-4 mb-4">
+                <h4 class="text-success mb-1"><i class="bi bi-check2-circle me-2"></i>¡Reserva generada con éxito!</h4>
+                <p class="text-muted mb-0">Su espacio ha sido bloqueado temporalmente. Complete el pago para confirmar la emisión.</p>
+            </div>
+
+            <!-- Boarding Pass de Lujo -->
+            <div class="card card-reserva border-0 overflow-hidden mb-4">
+                <div class="row g-0">
+                    <div class="col-md-8 p-5">
+                        <p class="text-muted small text-uppercase letter-spacing-2 mb-1">Pasajero</p>
+                        <h4 class="fw-bold mb-4" style="color: var(--altevia-blue);">@pasajero.Nombres @pasajero.Apellidos</h4>
+
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <p class="text-muted small text-uppercase letter-spacing-2 mb-1">Vuelo</p>
+                                <h5 class="fw-bold">@vuelo.CodigoVuelo</h5>
+                            </div>
+                            <div class="col-6">
+                                <p class="text-muted small text-uppercase letter-spacing-2 mb-1">Fecha</p>
+                                <h5 class="fw-bold">@vuelo.FechaOperacion.ToString("dd MMM yyyy")</h5>
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-2">
+                            <div class="col-5">
+                                <h2 class="fw-bold mb-0" style="color: var(--altevia-blue);">@vuelo.CiudadOrigen</h2>
+                                <p class="text-muted">@vuelo.HoraSalida.ToString(@"hh\:mm")</p>
+                            </div>
+                            <div class="col-2 text-center text-muted">
+                                <i class="bi bi-airplane fs-4" style="color: var(--altevia-gold);"></i>
+                            </div>
+                            <div class="col-5 text-end">
+                                <h2 class="fw-bold mb-0" style="color: var(--altevia-blue);">@vuelo.CiudadDestino</h2>
+                                <p class="text-muted">@vuelo.HoraLlegada.ToString(@"hh\:mm")</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lado derecho del Ticket (Asiento y Total) -->
+                    <div class="col-md-4 p-5 text-center d-flex flex-column justify-content-center" style="background-color: var(--altevia-ivory); border-left: 2px dashed #d1d1d1;">
+                        <p class="text-muted small text-uppercase letter-spacing-2 mb-1">Asiento</p>
+                        <h1 class="display-4 fw-bold mb-4" style="color: var(--altevia-gold);">@asiento.Codigo</h1>
+
+                        <p class="text-muted small text-uppercase letter-spacing-2 mb-1">Código Reserva</p>
+                        <h5 class="fw-bold mb-0">#@Model.ReservaId.ToString("D6")</h5>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="d-flex justify-content-between align-items-center p-4 bg-white shadow-sm" style="border-top: 2px solid var(--altevia-gold);">
+                <div>
+                    <span class="text-muted d-block small text-uppercase">Total a Pagar</span>
+                    <h3 class="fw-bold mb-0" style="color: var(--altevia-blue);">$@vuelo.TarifaReferencial USD</h3>
+                </div>
+                <div>
+                    @if (Model.EstadoReservaCodigo == "PENDIENTE")
+                    {
+                        @Html.ActionLink("Simular Pago", "Pago", "Reservas", new { id = Model.ReservaId }, new { @class = "btn btn-altevia px-5 py-3" })
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("MisReservas", "Reservas")" class="btn btn-outline-secondary px-5 py-3">Ir a Mis Reservas</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

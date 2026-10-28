@@ -1,0 +1,82 @@
+﻿@model IEnumerable<Progra_03.Models.vw_VueloDetalle>
+@{
+    ViewBag.Title = "Resultados de vuelos";
+}
+
+<div class="container mt-5 pt-5 mb-5">
+    <h2 style="color: var(--altevia-blue);">Resultados de vuelos</h2>
+
+    <!-- Resumen de búsqueda -->
+    <div class="d-flex flex-wrap align-items-center mb-4 text-muted border-bottom pb-2">
+        <span class="me-3 fw-bold text-dark">
+            <i class="bi bi-geo-alt-fill" style="color: var(--altevia-gold);"></i>
+            @ViewBag.Origen &rarr; @ViewBag.Destino
+        </span>
+        <span class="me-3"><i class="bi bi-calendar-event"></i> Fecha: @ViewBag.Fecha</span>
+        <span class="me-3"><i class="bi bi-person"></i> @ViewBag.Pasajeros pasajeros</span>
+
+        @Html.ActionLink("Modificar búsqueda", "Index", "Home", null, new { @class = "ms-auto text-decoration-none", style = "color: var(--altevia-blue); font-weight: 600;" })
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        foreach (var vuelo in Model)
+        {
+            <div class="card card-altevia mb-4">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <!-- Detalles del Horario -->
+                        <div class="col-md-5 mb-3 mb-md-0">
+                            <h4 class="fw-bold mb-1" style="color: var(--altevia-blue);">
+                                @vuelo.HoraSalida.ToString(@"hh\:mm") - @vuelo.HoraLlegada.ToString(@"hh\:mm")
+                            </h4>
+                            <p class="text-muted mb-1">
+                                <strong>@vuelo.CodigoVuelo</strong> &middot; Directo &middot; Aeronave: @(string.IsNullOrEmpty(vuelo.AeronaveId.ToString()) ? "Sin asignar" : "Confirmada")
+                            </p>
+                        </div>
+
+                        <!-- Estado y Precio -->
+                        <div class="col-md-3 text-md-center mb-3 mb-md-0">
+                            <span class="badge bg-light text-dark border p-2 mb-2" style="font-size: 0.85rem;">
+                                Estado: @vuelo.EstadoVueloCodigo
+                            </span>
+                            <h5 class="fw-bold" style="color: var(--altevia-gold);">
+                                $@vuelo.TarifaReferencial USD
+                            </h5>
+                        </div>
+
+                        <!-- Acciones -->
+                        <div class="col-md-4 text-md-end">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                @Html.ActionLink("Consultar disponibilidad", "Disponibilidad", "Vuelos", new { id = vuelo.VueloId }, new { @class = "btn btn-outline-altevia w-100 mb-2 mb-md-0" })
+
+                                @if (vuelo.EstadoVueloCodigo == "CANCELADO" || vuelo.EstadoVueloCodigo == "COMPLETADO")
+                                {
+                                    <button class="btn btn-secondary w-100 disabled" disabled>Vuelo no disponible</button>
+                                }
+                                else
+                                {
+                                    if (Request.IsAuthenticated)
+                                    {
+                                        @Html.ActionLink("Seleccionar vuelo", "SeleccionAsiento", "Reservas", new { vueloId = vuelo.VueloId }, new { @class = "btn btn-altevia w-100" })
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.Action("Login", "Account", new { returnUrl = Url.Action("SeleccionAsiento", "Reservas", new { vueloId = vuelo.VueloId }) })" class="btn btn-altevia w-100">Seleccionar vuelo</a>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="alert alert-info p-4 text-center mt-4" style="background-color: #f8f9fa; border-color: var(--altevia-blue); color: var(--altevia-blue);">
+            <h5 class="fw-bold mb-3">No hay vuelos disponibles para los criterios seleccionados.</h5>
+            <p class="mb-0">Intente modificando la fecha o seleccionando un origen y destino diferente que opere en el día elegido.</p>
+        </div>
+    }
+</div>

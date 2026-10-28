@@ -1,0 +1,75 @@
+﻿@model Progra_03.Models.Pasajero
+
+@{
+    ViewBag.Title = "Registrar Pasajero";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5 pt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card card-reserva border-0 shadow-sm">
+                <div class="card-header bg-dark-blue text-white py-3 border-0">
+                    <h5 class="mb-0 fw-bold" style="color: var(--altevia-gold);"><i class="bi bi-person-plus-fill me-2"></i>Registrar Nuevo Pasajero</h5>
+                </div>
+                <div class="card-body p-4 p-md-5 bg-white">
+
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-horizontal">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger fw-bold mb-3" })
+
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold text-muted small text-uppercase">Tipo Documento</label>
+                                    @Html.DropDownList("TipoDocumentoCodigo", null, htmlAttributes: new { @class = "form-select" })
+                                    @Html.ValidationMessageFor(model => model.TipoDocumentoCodigo, "", new { @class = "text-danger small" })
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="form-label fw-bold text-muted small text-uppercase">Número de Documento</label>
+                                    @Html.EditorFor(model => model.NumeroDocumento, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.NumeroDocumento, "", new { @class = "text-danger small" })
+                                </div>
+
+                                <div class="col-md-6 mt-3">
+                                    <label class="form-label fw-bold text-muted small text-uppercase">Nombres</label>
+                                    @Html.EditorFor(model => model.Nombres, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Nombres, "", new { @class = "text-danger small" })
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <label class="form-label fw-bold text-muted small text-uppercase">Apellidos</label>
+                                    @Html.EditorFor(model => model.Apellidos, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Apellidos, "", new { @class = "text-danger small" })
+                                </div>
+
+                                <div class="col-md-4 mt-3">
+                                    <label class="form-label fw-bold text-muted small text-uppercase">Nacimiento</label>
+                                    @Html.EditorFor(model => model.FechaNacimiento, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+                                    @Html.ValidationMessageFor(model => model.FechaNacimiento, "", new { @class = "text-danger small" })
+                                </div>
+                                <div class="col-md-4 mt-3">
+                                    <label class="form-label fw-bold text-muted small text-uppercase">Correo</label>
+                                    @Html.EditorFor(model => model.Correo, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Correo, "", new { @class = "text-danger small" })
+                                </div>
+                                <div class="col-md-4 mt-3">
+                                    <label class="form-label fw-bold text-muted small text-uppercase">Teléfono</label>
+                                    @Html.EditorFor(model => model.Telefono, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Telefono, "", new { @class = "text-danger small" })
+                                </div>
+                            </div>
+
+                            <!-- Botones -->
+                            <div class="mt-5 pt-3 border-top d-flex gap-3">
+                                <button type="submit" class="btn btn-altevia px-5 shadow-sm">Guardar</button>
+                                <a href="@Url.Action("Index")" class="btn btn-outline-secondary px-4">Volver a la lista</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

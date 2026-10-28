@@ -1,0 +1,53 @@
+﻿@{
+    ViewBag.Title = "Check-in";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5 pt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+
+            @if (TempData["MensajeExito"] != null)
+            {
+                <div class="alert alert-success fw-bold text-center mb-4">
+                    <i class="bi bi-check-circle-fill me-2"></i> @TempData["MensajeExito"]
+                </div>
+            }
+
+            <div class="card card-reserva border-0 shadow-lg">
+                <div class="card-header bg-dark-blue text-white text-center py-4 border-0">
+                    <h4 class="mb-0" style="color: var(--altevia-gold); letter-spacing: 2px;">WEB CHECK-IN</h4>
+                    <p class="mb-0 small text-white-50">Obtenga su pase de abordar</p>
+                </div>
+
+                <div class="card-body p-5 bg-white">
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger fw-bold small text-center mb-4">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i> @ViewBag.Error
+                        </div>
+                    }
+
+                    @using (Html.BeginForm("Buscar", "CheckIn", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Código de Reserva</label>
+                            <input type="text" name="CodigoReserva" class="form-control text-uppercase" placeholder="Ej: RV00000001" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Número de Documento</label>
+                            <input type="text" name="NumeroDocumento" class="form-control" placeholder="Cédula o Pasaporte" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-altevia w-100 py-3 mt-2 fw-bold shadow-sm">
+                            Buscar Vuelo
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

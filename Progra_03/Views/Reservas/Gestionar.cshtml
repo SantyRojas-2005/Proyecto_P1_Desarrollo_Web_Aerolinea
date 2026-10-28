@@ -1,0 +1,116 @@
+﻿@model Progra_03.Models.Reserva
+@{
+    ViewBag.Title = "Gestión de Reserva";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var vuelo = (Progra_03.Models.vw_VueloDetalle)ViewBag.Vuelo;
+    var pasajero = (Progra_03.Models.Pasajero)ViewBag.Pasajero;
+    var asiento = (Progra_03.Models.Asiento)ViewBag.Asiento;
+    var compra = (Progra_03.Models.Compra)ViewBag.Compra;
+}
+
+<div class="container mt-5 pt-4 mb-5">
+
+    @if (TempData["MensajeExito"] != null)
+    {
+        <div class="alert alert-success shadow-sm fw-bold"><i class="bi bi-check-circle-fill me-2"></i>@TempData["MensajeExito"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger shadow-sm fw-bold"><i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["Error"]</div>
+    }
+
+    <div class="card card-reserva border-0 shadow-sm mb-4">
+        <div class="card-header bg-white py-3 border-bottom d-flex flex-wrap align-items-center gap-3">
+            <h4 class="mb-0 fw-bold" style="color: var(--altevia-blue);">Reserva @Model.CodigoReserva</h4>
+
+            @if (Model.EstadoReservaCodigo == "CONFIRMADA")
+            {<span class="badge bg-success px-3 py-2">Reserva Confirmada</span> }
+            else if (Model.EstadoReservaCodigo == "PENDIENTE")
+            { <span class="badge bg-warning text-dark px-3 py-2">Pendiente de Pago</span> }
+            else
+            { <span class="badge bg-danger px-3 py-2">@Model.EstadoReservaCodigo</span>}
+
+            @if (compra != null && compra.EstadoCompraCodigo == "PAGADA")
+            {<span class="badge bg-primary px-3 py-2">Compra Pagada</span>}
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light text-muted small text-uppercase">
+                        <tr>
+                            <th class="ps-4">Vuelo</th>
+                            <th>Ruta</th>
+                            <th>Fecha</th>
+                            <th>Pasajero</th>
+                            <th class="pe-4">Asiento</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="ps-4 fw-bold">@vuelo.CodigoVuelo</td>
+                            <td>@vuelo.CiudadOrigen &rarr; @vuelo.CiudadDestino</td>
+                            <td>@vuelo.FechaOperacion.ToString("dd/MM/yyyy")</td>
+                            <td>@pasajero.Nombres @pasajero.Apellidos</td>
+                            <td class="pe-4 fw-bold" style="color: var(--altevia-gold);">@asiento.Codigo</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.EstadoReservaCodigo == "PENDIENTE" || Model.EstadoReservaCodigo == "CONFIRMADA")
+    {
+        <div class="card card-reserva border-0 shadow-sm bg-light">
+            <div class="card-body p-4 p-md-5">
+                <div class="alert alert-info border-0 shadow-sm mb-4" style="background-color: rgba(212, 175, 55, 0.1); color: var(--altevia-blue);">
+                    <i class="bi bi-info-circle-fill me-2" style="color: var(--altevia-gold);"></i>
+                    <strong>Condiciones de cancelación y reembolso:</strong> Se permite cancelar hasta 24 horas antes del vuelo. En caso de cancelaciones de vuelos pagados, se generará una nota de crédito académica (DP-08).
+                </div>
+
+                @using (Html.BeginForm("SolicitarCancelacion", "Reservas", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="ReservaId" value="@Model.ReservaId" />
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-muted small text-uppercase">Motivo de cancelación</label>
+                        <textarea class="form-control" name="MotivoCancelacion" rows="3" placeholder="Describa el motivo (10-300 caracteres)" minlength="10" maxlength="300" required></textarea>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <button type="button" class="btn btn-dark px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalCancelar">Solicitar cancelación</button>
+                        <a href="@Url.Action("MisReservas")" class="btn btn-outline-secondary px-4">Regresar</a>
+                    </div>
+
+                    <!-- Modal Confirmar Cancelación -->
+                    <div class="modal fade" id="modalCancelar" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content border-0">
+                                <div class="modal-header bg-light border-0">
+                                    <h5 class="modal-title fw-bold text-dark">Confirmar cancelación</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body p-4 text-center">
+                                    <i class="bi bi-exclamation-triangle-fill text-danger mb-3" style="font-size: 3rem;"></i>
+                                    <p class="mb-0"><strong>Advertencia:</strong> La cancelación liberará el asiento @asiento.Codigo inmediatamente. Esta acción no se puede deshacer.</p>
+                                </div>
+                                <div class="modal-footer bg-light border-0 d-flex justify-content-between">
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-danger fw-bold shadow-sm">Confirmar solicitud</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="text-center mt-4">
+            <a href="@Url.Action("MisReservas")" class="btn btn-outline-altevia px-4">Regresar a Mis Reservas</a>
+        </div>
+    }
+</div>

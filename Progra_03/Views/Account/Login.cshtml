@@ -1,0 +1,53 @@
+﻿@using Progra_03.Models
+@model LoginViewModel
+@{
+    ViewBag.Title = "Iniciar sesión";
+}
+
+<div class="row justify-content-center mt-5 mb-5">
+    <div class="col-md-5">
+        <div class="card card-altevia p-4">
+            <h3 class="mb-4 text-center" style="color: var(--altevia-blue);">@ViewBag.Title</h3>
+
+            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger mb-3 fw-bold" })
+
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.UserName, new { @class = "form-label fw-bold" }) <span class="text-danger">*</span>
+                    @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", placeholder = "Ingrese su nombre de usuario" })
+                    @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger small" })
+                </div>
+
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.Password, new { @class = "form-label fw-bold" }) <span class="text-danger">*</span>
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "********" })
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger small" })
+                </div>
+
+                <div class="mb-4 form-check">
+                    @Html.CheckBoxFor(m => m.RememberMe, new { @class = "form-check-input" })
+                    @Html.LabelFor(m => m.RememberMe, new { @class = "form-check-label" })
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-altevia">Iniciar sesión</button>
+                </div>
+
+                <div class="mt-4 text-center">
+                    <p class="mb-1">
+                        @Html.ActionLink("¿Olvidó su contraseña?", "ForgotPassword", null, new { @class = "text-decoration-none", style = "color: var(--altevia-blue);" })
+                    </p>
+                    <p class="mb-0">
+                        @Html.ActionLink("Crear cuenta", "Register", null, new { @class = "text-decoration-none fw-bold", style = "color: var(--altevia-gold);" })
+                    </p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,148 @@
+﻿
+@model IEnumerable<Progra_03.Models.vw_EstadoAsientoVuelo>
+@{
+    ViewBag.Title = "Selección de Asiento";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var vuelo = (Progra_03.Models.vw_VueloDetalle)ViewBag.Vuelo;
+    var dictAsientos = Model.ToDictionary(a => a.CodigoAsiento.Trim());
+
+    string GetClaseAsiento(string estado)
+    {
+        if (estado == "DISPONIBLE") return "asiento-disponible asiento-clickable";
+        if (estado == "OCUPADO") return "asiento-ocupado disabled";
+        if (estado == "RESERVADO") return "asiento-reservado disabled";
+        return "bg-secondary text-white disabled";
+    }
+}
+
+<div class="container mt-4 mb-5">
+
+    <!-- Indicador de Pasos -->
+    <div class="d-flex justify-content-center mb-4">
+        <div class="badge bg-dark p-2 px-3 me-2 fw-bold" style="font-size: 0.9rem;">1. Asientos</div>
+        <div class="badge bg-light text-muted border p-2 px-3 me-2" style="font-size: 0.9rem;">2. Pasajeros</div>
+        <div class="badge bg-light text-muted border p-2 px-3 me-2" style="font-size: 0.9rem;">3. Reserva</div>
+        <div class="badge bg-light text-muted border p-2 px-3" style="font-size: 0.9rem;">4. Pago</div>
+    </div>
+
+    <!-- Barra de Datos -->
+    <div class="card card-altevia mb-4">
+        <div class="card-body p-3 d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="fw-bold mb-0" style="color: var(--altevia-blue);">Vuelo @vuelo.CodigoVuelo</h5>
+                <p class="text-muted mb-0 small">@vuelo.CiudadOrigen &rarr; @vuelo.CiudadDestino &middot; @vuelo.FechaOperacion.ToString("dd/MM/yyyy")</p>
+            </div>
+            <div class="text-end">
+                <p class="mb-0 fw-bold">@vuelo.HoraSalida.ToString(@"hh\:mm") - @vuelo.HoraLlegada.ToString(@"hh\:mm")</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenedor del Mapa del Avión -->
+    <div class="card card-altevia mb-4 overflow-auto">
+        <div class="card-body p-5 text-center" style="min-width: 800px;">
+            <p class="text-muted small fw-bold mb-4 text-start ms-5">&larr; Proa (frente)</p>
+
+            <div class="d-inline-block position-relative p-4" style="border: 2px solid #e0e0e0; border-radius: 200px 50px 50px 200px; padding-left: 120px !important;">
+
+                <div class="position-absolute" style="left: 20px; top: 50%; transform: translateY(-50%); width: 80px; height: 100px; background-color: #f0f0f0; border-radius: 100px 20px 20px 100px; display: flex; align-items: center; justify-content: center;">
+                    <span class="small text-muted" style="font-size: 0.6rem;">CABINA</span>
+                </div>
+
+                <div class="d-flex align-items-center mb-4 ms-3">
+                    <span class="me-3 small text-muted fw-bold" style="width: 80px;">Lado Der (D)</span>
+
+                    <button type="button" class="btn @GetClaseAsiento(dictAsientos["1D"].EstadoVisual) me-2 p-3 fw-bold btn-asiento" data-numero="1" data-codigo="1D" style="width: 80px;">
+                        1D<br><span style="font-size: 0.6rem;">@dictAsientos["1D"].EstadoVisual</span>
+                    </button>
+                    <button type="button" class="btn @GetClaseAsiento(dictAsientos["2D"].EstadoVisual) me-4 p-3 fw-bold btn-asiento" data-numero="2" data-codigo="2D" style="width: 80px;">
+                        2D<br><span style="font-size: 0.6rem;">@dictAsientos["2D"].EstadoVisual</span>
+                    </button>
+
+                    <div class="me-4 text-muted small border rounded p-2" style="background-color: #fafafa;">MESA</div>
+
+                    <button type="button" class="btn @GetClaseAsiento(dictAsientos["3D"].EstadoVisual) me-2 p-3 fw-bold btn-asiento" data-numero="4" data-codigo="3D" style="width: 80px;">
+                        3D<br><span style="font-size: 0.6rem;">@dictAsientos["3D"].EstadoVisual</span>
+                    </button>
+                    <button type="button" class="btn @GetClaseAsiento(dictAsientos["4D"].EstadoVisual) me-4 p-3 fw-bold btn-asiento" data-numero="6" data-codigo="4D" style="width: 80px;">
+                        4D<br><span style="font-size: 0.6rem;">@dictAsientos["4D"].EstadoVisual</span>
+                    </button>
+
+                    <div class="text-muted small border rounded p-2" style="background-color: #fafafa;">BAÑO</div>
+                </div>
+
+                <div class="w-100 mb-4 ms-3" style="height: 30px; border-top: 2px dashed #e0e0e0; border-bottom: 2px dashed #e0e0e0; display: flex; align-items: center; justify-content: center;">
+                    <span class="small text-muted letter-spacing-2">PASILLO</span>
+                </div>
+
+                <div class="d-flex align-items-center ms-3">
+                    <span class="me-3 small text-muted fw-bold" style="width: 80px;">Lado Izq (I)</span>
+
+                    <div class="me-2 text-muted small border border-dashed p-3 text-center" style="width: 80px; height: 75px;">PUERTA</div>
+
+                    <button type="button" class="btn @GetClaseAsiento(dictAsientos["2I"].EstadoVisual) me-4 p-3 fw-bold btn-asiento" data-numero="3" data-codigo="2I" style="width: 80px;">
+                        2I<br><span style="font-size: 0.6rem;">@dictAsientos["2I"].EstadoVisual</span>
+                    </button>
+
+                    <div class="me-4 text-muted small border rounded p-2" style="background-color: #fafafa;">MESA</div>
+
+                    <button type="button" class="btn @GetClaseAsiento(dictAsientos["3I"].EstadoVisual) me-2 p-3 fw-bold btn-asiento" data-numero="5" data-codigo="3I" style="width: 80px;">
+                        3I<br><span style="font-size: 0.6rem;">@dictAsientos["3I"].EstadoVisual</span>
+                    </button>
+                    <button type="button" class="btn @GetClaseAsiento(dictAsientos["4I"].EstadoVisual) me-4 p-3 fw-bold btn-asiento" data-numero="7" data-codigo="4I" style="width: 80px;">
+                        4I<br><span style="font-size: 0.6rem;">@dictAsientos["4I"].EstadoVisual</span>
+                    </button>
+
+                    <div class="text-muted small border rounded p-2" style="background-color: #fafafa;">EQUIPAJE</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resumen y Formulario -->
+    <div class="row">
+        <div class="col-md-7 mb-3">
+            <div class="alert alert-info border-0 shadow-sm" style="background-color: rgba(212, 175, 55, 0.1); color: var(--altevia-blue);">
+                <i class="bi bi-info-circle-fill" style="color: var(--altevia-gold);"></i>
+                <strong>Información:</strong> Su selección es temporal: la reserva se registrará al confirmar en el paso 3.
+            </div>
+        </div>
+        <div class="col-md-5 text-md-end">
+            @using (Html.BeginForm("Pasajeros", "Reservas", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="vueloId" value="@vuelo.VueloId" />
+                <input type="hidden" name="numeroAsiento" id="asientoSeleccionado" value="" />
+
+                <h5 class="mb-3">Asiento seleccionado: <span id="textoAsiento" class="fw-bold" style="color: var(--altevia-gold);">Ninguno</span></h5>
+
+                <a href="@Url.Action("Disponibilidad", "Vuelos", new { id = vuelo.VueloId })" class="btn btn-outline-altevia me-2">Regresar</a>
+                <button type="submit" id="btnContinuar" class="btn btn-altevia" disabled>Continuar</button>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Lógica para seleccionar un asiento disponible
+            $('.asiento-clickable').click(function () {
+                // Quitar selección previa de cualquier otro asiento
+                $('.asiento-clickable').removeClass('asiento-seleccionado').css('background-color', '#28a745');
+
+                // Agregar clase de selección al actual y pintarlo de negro
+                $(this).addClass('asiento-seleccionado').css('background-color', '#000000');
+
+                // Extraer los datos del asiento
+                var codigoAsiento = $(this).data('codigo');
+                var numAsiento = $(this).data('numero');
+
+                // Actualizar interfaz y habilitar el botón de Continuar
+                $('#textoAsiento').text(codigoAsiento);
+                $('#asientoSeleccionado').val(numAsiento);
+                $('#btnContinuar').prop('disabled', false);
+            });
+        });
+    </script>
+}

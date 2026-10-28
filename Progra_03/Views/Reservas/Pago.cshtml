@@ -1,0 +1,113 @@
+﻿@model Progra_03.Models.Reserva
+@{
+    ViewBag.Title = "Pago de Reserva";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5 pt-4 mb-5">
+
+    <!-- Indicador de Pasos -->
+    <div class="d-flex justify-content-center mb-5">
+        <div class="badge bg-success p-2 px-3 me-2 fw-bold" style="font-size: 0.9rem;"><i class="bi bi-check-circle"></i> 1. Asientos</div>
+        <div class="badge bg-success p-2 px-3 me-2 fw-bold" style="font-size: 0.9rem;"><i class="bi bi-check-circle"></i> 2. Pasajeros</div>
+        <div class="badge bg-success p-2 px-3 me-2 fw-bold" style="font-size: 0.9rem;"><i class="bi bi-check-circle"></i> 3. Reserva</div>
+        <div class="badge bg-dark p-2 px-3" style="font-size: 0.9rem;">4. Pago</div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card card-reserva border-0 shadow-lg">
+                <div class="card-header bg-dark-blue text-white text-center py-4 border-0">
+                    <h4 class="mb-0" style="color: var(--altevia-gold); letter-spacing: 2px;">PASARELA DE PAGO</h4>
+                    <p class="mb-0 small text-white-50">Transacción Segura Simulada</p>
+                </div>
+
+                <div class="card-body p-5 bg-white">
+                    <div class="text-center mb-4">
+                        <span class="text-muted d-block text-uppercase small fw-bold">Total a Pagar</span>
+                        <h1 class="display-5 fw-bold" style="color: var(--altevia-blue);">$@ViewBag.Total USD</h1>
+                        <p class="text-muted small">Reserva #@Model.ReservaId.ToString("D6")</p>
+                    </div>
+
+                    <!-- Formulario limpio usando solo HTML5 -->
+                    @using (Html.BeginForm("ProcesarPago", "Reservas", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="ReservaId" value="@Model.ReservaId" />
+                        <input type="hidden" name="Total" value="@ViewBag.Total" />
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-muted text-uppercase">Método de Pago</label>
+                                <select name="MetodoPagoCodigo" class="form-select" required>
+                                    <option value="">Seleccione...</option>
+                                    @foreach (var metodo in ViewBag.Metodos)
+                                    {
+                                        <option value="@metodo.Codigo">@metodo.Nombre</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-muted text-uppercase">Tarjeta</label>
+                                <select name="MarcaTarjetaCodigo" class="form-select" required>
+                                    <option value="">Seleccione...</option>
+                                    @foreach (var marca in ViewBag.Marcas)
+                                    {
+                                        <option value="@marca.Codigo">@marca.Nombre</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="col-12 mt-4">
+                                <label class="form-label fw-bold small text-muted text-uppercase">Número de Tarjeta (Simulado)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="bi bi-credit-card-fill text-muted"></i></span>
+                                    <input type="text" name="NumeroTarjeta" class="form-control" placeholder="1234 5678 9101 1121" pattern="[0-9]{15,16}" title="Ingrese 15 o 16 números sin espacios" maxlength="16" required>
+                                </div>
+                            </div>
+
+                            <div class="col-12 mt-3">
+                                <label class="form-label fw-bold small text-muted text-uppercase">Nombre del Titular</label>
+                                <input type="text" name="NombreTitular" class="form-control text-uppercase" placeholder="COMO APARECE EN LA TARJETA" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras" required>
+                            </div>
+
+                            <div class="col-6 mt-3">
+                                <label class="form-label fw-bold small text-muted text-uppercase">Vencimiento</label>
+                                <!-- AQUÍ SE AGREGÓ id="vencimiento" -->
+                                <input type="text" id="vencimiento" class="form-control" placeholder="MM/AA" pattern="(0[1-9]|1[0-2])\/[0-9]{2}" title="Formato MM/AA" maxlength="5" required>
+                            </div>
+
+                            <div class="col-6 mt-3">
+                                <label class="form-label fw-bold small text-muted text-uppercase">CVV</label>
+                                <input type="password" class="form-control" placeholder="***" pattern="[0-9]{3,4}" title="3 o 4 dígitos de seguridad" maxlength="4" required>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning mt-4 p-3 d-flex align-items-center" style="font-size: 0.8rem;">
+                            <i class="bi bi-info-circle-fill fs-4 me-3 text-warning"></i>
+                            <div>
+                                <strong>Aviso Académico:</strong> Esta es una simulación de pagos. No ingrese datos reales de tarjetas de crédito o débito.
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-altevia w-100 py-3 mt-3 fw-bold fs-5 shadow-sm">
+                            <i class="bi bi-lock-fill me-2"></i> Pagar $@ViewBag.Total USD
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        document.getElementById('vencimiento').addEventListener('input', function (e) {
+            var input = e.target.value.replace(/\D/g, ''); // Elimina todo lo que no sea número
+            if (input.length > 2) {
+                e.target.value = input.substring(0, 2) + '/' + input.substring(2, 4);
+            } else {
+                e.target.value = input;
+            }
+        });
+    </script>
+}

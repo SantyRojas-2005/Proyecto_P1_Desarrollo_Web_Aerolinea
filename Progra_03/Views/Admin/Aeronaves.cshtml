@@ -1,0 +1,178 @@
+﻿@model IEnumerable<Progra_03.Models.Aeronave>
+@{
+    ViewBag.Title = "Gestión de Aeronaves";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var estados = ViewBag.Estados as List<Progra_03.Models.EstadoAeronave>;
+    var vuelosProximos = ViewBag.VuelosProximos as Dictionary<int, int>;
+}
+
+<div class="container mt-5 pt-4 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold mb-0" style="color: var(--altevia-blue);">Flota y Aeronaves</h3>
+        <span class="badge bg-light text-dark border p-2"><i class="bi bi-airplane-fill text-primary"></i> Total Flota: @Model.Count() Jets</span>
+    </div>
+
+    @if (TempData["MensajeExito"] != null)
+    {
+        <div class="alert alert-success shadow-sm fw-bold"><i class="bi bi-check-circle-fill me-2"></i>@TempData["MensajeExito"]</div>
+    }
+    @if (TempData["ErrorValidacion"] != null)
+    {
+        <div class="alert alert-danger shadow-sm fw-bold"><i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["ErrorValidacion"]</div>
+    }
+
+    <!-- Tabla de Flota -->
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light text-muted small text-uppercase">
+                    <tr>
+                        <th>Identificador</th>
+                        <th>Modelo</th>
+                        <th class="text-center">Capacidad</th>
+                        <th>Estado</th>
+                        <th class="text-center">Vuelos Próximos</th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var avion in Model)
+                    {
+                        <tr>
+                            <td class="fw-bold text-dark fs-5">@avion.Matricula</td>
+                            <td>@avion.ModeloAeronave.Fabricante @avion.ModeloAeronave.Nombre</td>
+                            <td class="text-center">@avion.ModeloAeronave.CapacidadAsientos asientos</td>
+                            <td>
+                                @if (avion.EstadoAeronaveCodigo == "DISPONIBLE")
+                                {
+                                    <span class="badge bg-success"><i class="bi bi-check-circle"></i> Disponible</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger"><i class="bi bi-x-circle"></i> No Disponible</span>
+                                }
+                            </td>
+                            <td class="text-center fw-bold text-primary">
+                                @(vuelosProximos.ContainsKey(avion.AeronaveId) ? vuelosProximos[avion.AeronaveId] : 0)
+                            </td>
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-outline-secondary me-1" data-bs-toggle="modal" data-bs-target="#modalMapa-@avion.AeronaveId">Consultar</button>
+                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalEditar-@avion.AeronaveId">Modificar estado</button>
+                            </td>
+                        </tr>
+
+                        <!-- Modal de Edición de Estado -->
+                        <div class="modal fade" id="modalEditar-@avion.AeronaveId" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-dark-blue text-white">
+                                        <h5 class="modal-title" style="color: var(--altevia-gold);">Editar @avion.Matricula</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    @using (Html.BeginForm("EditarAeronave", "Admin", FormMethod.Post))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <div class="modal-body p-4">
+                                            <input type="hidden" name="AeronaveId" value="@avion.AeronaveId" />
+
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold small text-muted">Matrícula / Identificador</label>
+                                                <input type="text" class="form-control bg-light" value="@avion.Matricula" readonly />
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold small text-muted">Modelo</label>
+                                                <input type="text" class="form-control bg-light" value="@avion.ModeloAeronave.Fabricante @avion.ModeloAeronave.Nombre" readonly />
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold small text-muted">Estado Operativo <span class="text-danger">*</span></label>
+                                                <select name="EstadoAeronaveCodigo" class="form-select border-primary" required>
+                                                    @foreach (var estado in estados)
+                                                    {
+                                                        <option value="@estado.Codigo" @(avion.EstadoAeronaveCodigo == estado.Codigo ? "selected" : "")>
+                                                            @estado.Descripcion
+                                                        </option>
+                                                    }
+                                                </select>
+                                                @if (vuelosProximos.ContainsKey(avion.AeronaveId) && vuelosProximos[avion.AeronaveId] > 0)
+                                                {
+                                                    <div class="form-text text-warning mt-2 fw-bold">
+                                                        <i class="bi bi-exclamation-triangle-fill"></i> La aeronave tiene @vuelosProximos[avion.AeronaveId] vuelos asignados próximamente. Revise la programación antes de marcarla como no disponible.
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer bg-light">
+                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <button type="submit" class="btn btn-altevia px-4">Guardar</button>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal del Mapa de Asientos (Modo Lectura) -->
+                        <div class="modal fade" id="modalMapa-@avion.AeronaveId" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-light">
+                                        <h5 class="modal-title fw-bold text-dark">Distribución de @avion.Matricula</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body p-5 text-center" style="background-color: var(--altevia-ivory);">
+                                        <h6 class="text-muted text-uppercase mb-4">Cabina Embraer Phenom 300E (7 Asientos)</h6>
+                                        <!-- Representación CSS del avión -->
+                                        <div class="modal-body p-4 text-center" style="background-color: var(--altevia-ivory);">
+                                            <h6 class="text-muted text-uppercase mb-4 fw-bold">Cabina Embraer Phenom 300E (7 Asientos)</h6>
+
+                                            <!-- Representación del avión mejorada -->
+                                            <div class="d-inline-flex align-items-center justify-content-between p-4 bg-white shadow-sm"
+                                                 style="border: 2px solid #ccc; border-radius: 150px 60px 60px 150px; width: 100%; max-width: 700px; min-height: 220px;">
+
+                                                <!-- Cabina de mando (Proa) -->
+                                                <div class="text-muted small fw-bold pe-4 me-3 border-end d-flex align-items-center" style="min-height: 140px; writing-mode: vertical-rl; transform: rotate(180deg);">
+                                                    CABINA DE MANDO
+                                                </div>
+
+                                                <!-- Zona de Asientos -->
+                                                <div class="d-flex flex-column justify-content-center flex-grow-1">
+                                                    <!-- Lado Derecho (Arriba) -->
+                                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                                        <div class="p-3 bg-success text-white rounded shadow-sm fw-bold">1D</div>
+                                                        <div class="p-3 bg-success text-white rounded shadow-sm fw-bold">2D</div>
+                                                        <div class="px-2 text-muted small" style="font-size: 0.7rem; border: 1px solid #ddd; background: #f9f9f9;">Mesa</div>
+                                                        <div class="p-3 bg-success text-white rounded shadow-sm fw-bold">3D</div>
+                                                        <div class="p-3 bg-success text-white rounded shadow-sm fw-bold">4D</div>
+                                                    </div>
+
+                                                    <!-- Pasillo -->
+                                                    <div class="w-100 bg-light rounded text-muted py-2 mb-2" style="font-size: 0.75rem; letter-spacing: 4px;">PASILLO CENTRAL</div>
+
+                                                    <!-- Lado Izquierdo (Abajo) -->
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div class="p-3 bg-light text-muted border border-dashed rounded small d-flex align-items-center justify-content-center" style="width: 50px; font-size: 0.75rem;">Puerta</div>
+                                                        <div class="p-3 bg-success text-white rounded shadow-sm fw-bold">2I</div>
+                                                        <div class="px-2 text-muted small" style="font-size: 0.7rem; border: 1px solid #ddd; background: #f9f9f9;">Mesa</div>
+                                                        <div class="p-3 bg-success text-white rounded shadow-sm fw-bold">3I</div>
+                                                        <div class="p-3 bg-success text-white rounded shadow-sm fw-bold">4I</div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Cola (Baño / Equipaje) -->
+                                                <div class="text-muted small fw-bold ps-4 ms-3 border-start d-flex flex-column justify-content-between" style="min-height: 140px;">
+                                                    <div class="p-2 border rounded bg-light" style="font-size: 0.7rem;">Baño</div>
+                                                    <div class="p-2 border rounded bg-light mt-auto" style="font-size: 0.7rem;">Equipaje</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

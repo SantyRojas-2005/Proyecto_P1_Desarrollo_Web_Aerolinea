@@ -1,0 +1,115 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+
+<!-- Hero Section (Pantalla Completa) -->
+<div style="background: linear-gradient(to bottom, rgba(11, 27, 61, 0.4), rgba(11, 27, 61, 0.8)), url('https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=2000&auto=format&fit=crop') no-repeat center center / cover; height: 90vh; display: flex; align-items: center; position: relative;">
+    <div class="container text-center text-white" style="margin-top: -50px;">
+        <p style="font-family: 'Montserrat', sans-serif; letter-spacing: 6px; font-size: 0.8rem; color: var(--altevia-gold);" class="mb-3 text-uppercase">Vuelos Chárter</p>
+        <div style="height: 1px; width: 60px; background-color: var(--altevia-gold); margin: 0 auto 30px auto;"></div>
+        <h1 class="display-3 mb-4" style="font-family: 'Montserrat', sans-serif; font-weight: 300; letter-spacing: 4px;">
+            BEYOND THE <span style="font-weight: 500;">HORIZON</span>
+        </h1>
+        <div class="mt-5">
+            <a href="#reservar" class="btn btn-outline-gold text-white border-white me-3 px-4 py-3">Solicitar Cotización</a>
+        </div>
+    </div>
+</div>
+
+<!-- Tarjeta de Reserva Flotante -->
+<div id="reservar" class="container" style="margin-top: -120px; position: relative; z-index: 10;">
+    <div class="row justify-content-center">
+        <div class="col-lg-11">
+            <div class="card card-reserva p-2">
+                <div class="card-body p-5">
+
+                    <!-- Selectores de viaje -->
+                    
+
+                    @using (Html.BeginForm("Buscar", "Vuelos", FormMethod.Get, new { @class = "row g-4 align-items-end" }))
+                    {
+                        <div class="col-md-3">
+                            <label for="origen" class="form-label d-flex align-items-center"><i class="bi bi-geo-alt me-2" style="color: var(--altevia-gold);"></i> Origen <span class="text-danger ms-1">*</span></label>
+                            <select name="origen" id="origen" class="form-select fw-bold mt-2" required>
+                                <option value="UIO" selected>Quito (UIO)</option>
+                                <option value="GYE">Guayaquil (GYE)</option>
+                                <option value="MEC">Manta (MEC)</option>
+                                <option value="GPS">Galápagos (GPS)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="destino" class="form-label d-flex align-items-center"><i class="bi bi-geo me-2" style="color: var(--altevia-gold);"></i> Destino <span class="text-danger ms-1">*</span></label>
+                            <select name="destino" id="destino" class="form-select fw-bold mt-2" required>
+                                <option value="">Seleccione...</option>
+                                <option value="GYE">Guayaquil (GYE)</option>
+                                <option value="MEC">Manta (MEC)</option>
+                                <option value="GPS">Galápagos (GPS)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="fecha" class="form-label d-flex align-items-center"><i class="bi bi-calendar2 me-2" style="color: var(--altevia-gold);"></i> Salida <span class="text-danger ms-1">*</span></label>
+                            <input type="date" name="fecha" id="fecha" class="form-control fw-bold mt-2" required min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                        </div>
+                        <div class="col-md-2">
+                            <label for="pasajeros" class="form-label d-flex align-items-center"><i class="bi bi-person me-2" style="color: var(--altevia-gold);"></i> Pax <span class="text-danger ms-1">*</span></label>
+                            <input type="number" name="pasajeros" id="pasajeros" class="form-control fw-bold mt-2" min="1" max="7" value="1" required />
+                        </div>
+                        <div class="col-md-2 text-md-end mt-4 mt-md-0">
+                            <button type="submit" class="btn btn-altevia w-100 py-3" style="font-size: 0.7rem;">Consultar</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Propuesta de Valor -->
+<div class="container section-padding text-center">
+    <div class="row">
+        <div class="col-md-4 mb-5 mb-md-0 px-4">
+            <i class="bi bi-shield-check icon-gold"></i>
+            <h5 class="fw-bold mb-3" style="color: var(--altevia-blue); letter-spacing: 1px;">Privacidad Absoluta</h5>
+            <p class="text-muted small lh-lg">Cabinas exclusivas diseñadas para garantizar la máxima discreción y confort durante todo su trayecto.</p>
+        </div>
+        <div class="col-md-4 mb-5 mb-md-0 px-4">
+            <i class="bi bi-gem icon-gold"></i>
+            <h5 class="fw-bold mb-3" style="color: var(--altevia-blue); letter-spacing: 1px;">Personalización</h5>
+            <p class="text-muted small lh-lg">Servicios a bordo adaptados a sus requerimientos exactos, desde catering hasta traslados en tierra.</p>
+        </div>
+        <div class="col-md-4 px-4">
+            <i class="bi bi-clock-history icon-gold"></i>
+            <h5 class="fw-bold mb-3" style="color: var(--altevia-blue); letter-spacing: 1px;">Flexibilidad</h5>
+            <p class="text-muted small lh-lg">Despegues sin demoras ni filas en terminales comerciales. Su itinerario funciona bajo su propio reloj.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Sección Flota (Azul Noche) -->
+<div class="bg-dark-blue section-padding text-center">
+    <div class="container">
+        <p style="font-family: 'Montserrat', sans-serif; letter-spacing: 4px; font-size: 0.75rem; color: var(--altevia-gold);" class="mb-3 text-uppercase">Nuestra Flota</p>
+        <h2 class="mb-5 fw-light" style="letter-spacing: 2px;">Embraer Phenom 300E</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Placeholder para la imagen del avión (URL actualizada y estable) -->
+                <div style="height: 350px; background: url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=1200&auto=format&fit=crop') no-repeat center center / cover; border-radius: 2px; margin-bottom: 40px;"></div>
+                <div class="row text-white text-start">
+                    <div class="col-4 border-end border-secondary">
+                        <p class="text-muted small text-uppercase mb-1">Capacidad</p>
+                        <h5 class="fw-bold" style="color: var(--altevia-gold);">7 Asientos</h5>
+                    </div>
+                    <div class="col-4 border-end border-secondary ps-4">
+                        <p class="text-muted small text-uppercase mb-1">Alcance</p>
+                        <h5 class="fw-bold" style="color: var(--altevia-gold);">2,010 nm</h5>
+                    </div>
+                    <div class="col-4 ps-4">
+                        <p class="text-muted small text-uppercase mb-1">Velocidad</p>
+                        <h5 class="fw-bold" style="color: var(--altevia-gold);">Mach 0.80</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

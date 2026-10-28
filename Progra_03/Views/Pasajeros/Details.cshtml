@@ -1,0 +1,46 @@
+﻿@model Progra_03.Models.Pasajero
+
+@{
+    ViewBag.Title = "Detalles del Pasajero";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5 pt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card card-reserva border-0 shadow-sm">
+                <div class="card-header bg-light py-3 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold" style="color: var(--altevia-blue);"><i class="bi bi-person-vcard me-2"></i>Ficha del Pasajero</h5>
+                    <span class="badge bg-dark">Registrado: @Model.FechaRegistro.ToString("dd/MM/yyyy")</span>
+                </div>
+                <div class="card-body p-5">
+
+                    <div class="row mb-4">
+                        <div class="col-sm-4 text-muted fw-bold text-uppercase small">Documento</div>
+                        <div class="col-sm-8 fw-bold fs-5">@Model.TipoDocumentoIdentidad.Descripcion - @Model.NumeroDocumento</div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-sm-4 text-muted fw-bold text-uppercase small">Nombres Completos</div>
+                        <div class="col-sm-8 fs-5">@Model.Nombres @Model.Apellidos</div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-sm-4 text-muted fw-bold text-uppercase small">Fecha de Nacimiento</div>
+                        <div class="col-sm-8">@(Model.FechaNacimiento.HasValue ? Model.FechaNacimiento.Value.ToString("dd/MM/yyyy") : "No registrada")</div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-sm-4 text-muted fw-bold text-uppercase small">Contacto</div>
+                        <div class="col-sm-8">
+                            <div><i class="bi bi-envelope me-2 text-muted"></i>@(string.IsNullOrEmpty(Model.Correo) ? "Sin correo" : Model.Correo)</div>
+                            <div class="mt-2"><i class="bi bi-telephone me-2 text-muted"></i>@(string.IsNullOrEmpty(Model.Telefono) ? "Sin teléfono" : Model.Telefono)</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 pt-4 border-top d-flex gap-3">
+                        <a href="@Url.Action("Edit", new { id = Model.PasajeroId })" class="btn btn-altevia px-5 shadow-sm"><i class="bi bi-pencil me-2"></i>Editar</a>
+                        <a href="@Url.Action("Gestion", "Admin", new { tab = "pasajeros" })" class="btn btn-outline-secondary px-4">Volver al Panel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

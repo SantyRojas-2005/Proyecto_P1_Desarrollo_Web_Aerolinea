@@ -1,0 +1,75 @@
+﻿@model Progra_03.Models.Pasajero
+@{
+    ViewBag.Title = "Editar Pasajero";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5 pt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card card-reserva border-0 shadow-sm">
+                <div class="card-header bg-dark-blue text-white py-3 border-0">
+                    <h5 class="mb-0 fw-bold" style="color: var(--altevia-gold);"><i class="bi bi-pencil-square me-2"></i>Editar Pasajero: @Model.Nombres @Model.Apellidos</h5>
+                </div>
+                <div class="card-body p-4 p-md-5 bg-white">
+
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(model => model.PasajeroId)
+                        @Html.HiddenFor(model => model.FechaRegistro)
+
+                        <div class="row g-3">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger fw-bold mb-3" })
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold text-muted small text-uppercase">Tipo Doc.</label>
+                                @Html.DropDownList("TipoDocumentoCodigo", null, htmlAttributes: new { @class = "form-select border-primary" })
+                                @Html.ValidationMessageFor(model => model.TipoDocumentoCodigo, "", new { @class = "text-danger small" })
+                            </div>
+                            <div class="col-md-8">
+                                <label class="form-label fw-bold text-muted small text-uppercase">Número de Documento</label>
+                                @Html.TextBoxFor(model => model.NumeroDocumento, new { @class = "form-control fw-bold" })
+                                @Html.ValidationMessageFor(model => model.NumeroDocumento, "", new { @class = "text-danger small" })
+                            </div>
+
+                            <div class="col-md-6 mt-3">
+                                <label class="form-label fw-bold text-muted small text-uppercase">Nombres</label>
+                                @Html.TextBoxFor(model => model.Nombres, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.Nombres, "", new { @class = "text-danger small" })
+                            </div>
+                            <div class="col-md-6 mt-3">
+                                <label class="form-label fw-bold text-muted small text-uppercase">Apellidos</label>
+                                @Html.TextBoxFor(model => model.Apellidos, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.Apellidos, "", new { @class = "text-danger small" })
+                            </div>
+
+                            <div class="col-md-4 mt-3">
+                                <label class="form-label fw-bold text-muted small text-uppercase">Nacimiento</label>
+                                <!-- Input nativo de HTML5 para evitar errores visuales con fechas -->
+                                <input type="date" name="FechaNacimiento" class="form-control" value="@(Model.FechaNacimiento.HasValue ? Model.FechaNacimiento.Value.ToString("yyyy-MM-dd") : "")" />
+                                @Html.ValidationMessageFor(model => model.FechaNacimiento, "", new { @class = "text-danger small" })
+                            </div>
+                            <div class="col-md-4 mt-3">
+                                <label class="form-label fw-bold text-muted small text-uppercase">Correo</label>
+                                @Html.TextBoxFor(model => model.Correo, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.Correo, "", new { @class = "text-danger small" })
+                            </div>
+                            <div class="col-md-4 mt-3">
+                                <label class="form-label fw-bold text-muted small text-uppercase">Teléfono</label>
+                                @Html.TextBoxFor(model => model.Telefono, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.Telefono, "", new { @class = "text-danger small" })
+                            </div>
+                        </div>
+
+                        <div class="mt-5 pt-3 border-top d-flex gap-3">
+                            <button type="submit" class="btn btn-altevia px-5 shadow-sm">Guardar Cambios</button>
+                            <!-- El botón cancelar regresa a las pestañas -->
+                            <a href="@Url.Action("Gestion", "Admin", new { tab = "pasajeros" })" class="btn btn-outline-secondary px-4">Cancelar</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

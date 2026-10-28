@@ -1,0 +1,172 @@
+﻿@{
+    ViewBag.Title = "Gestión Administrativa";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string tabActiva = ViewBag.TabActiva;
+    bool esSuperUsuario = ViewBag.EsSuperUsuario != null ? (bool)ViewBag.EsSuperUsuario : false;
+
+    var pasajeros = ViewBag.Pasajeros as List<Progra_03.Models.Pasajero>;
+    var reservas = ViewBag.Reservas as List<Progra_03.Models.Reserva>;
+}
+
+<div class="container mt-5 pt-4 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold mb-0" style="color: var(--altevia-blue);">Gestión de Operaciones</h3>
+    </div>
+
+    <!-- Pestañas Administrativas -->
+    <ul class="nav nav-tabs mb-4" id="gestionTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link @(tabActiva == "usuarios" ? "active fw-bold text-white" : "text-muted") border-0"
+                    id="usuarios-tab" data-bs-toggle="tab" data-bs-target="#usuarios" type="button" role="tab"
+                    style="@(tabActiva == "usuarios" ? "background-color: var(--altevia-blue);" : "")">
+                Usuarios
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link @(tabActiva == "pasajeros" ? "active fw-bold text-white" : "text-muted") border-0"
+                    id="pasajeros-tab" data-bs-toggle="tab" data-bs-target="#pasajeros" type="button" role="tab"
+                    style="@(tabActiva == "pasajeros" ? "background-color: var(--altevia-blue);" : "")">
+                Pasajeros
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link @(tabActiva == "reservas" ? "active fw-bold text-white" : "text-muted") border-0"
+                    id="reservas-tab" data-bs-toggle="tab" data-bs-target="#reservas" type="button" role="tab"
+                    style="@(tabActiva == "reservas" ? "background-color: var(--altevia-blue);" : "")">
+                Reservas Globales
+            </button>
+        </li>
+    </ul>
+
+    <!-- Contenido de las Pestañas -->
+    <div class="tab-content bg-white p-4 shadow-sm border rounded" id="gestionTabsContent">
+
+        <!-- PESTAÑA USUARIOS (IDENTITY) -->
+        <div class="tab-pane fade @(tabActiva == "usuarios" ? "show active" : "")" id="usuarios" role="tabpanel">
+            <div class="d-flex justify-content-between mb-3">
+                <input type="text" class="form-control w-25" placeholder="Buscar usuario, correo..." />
+                <button class="btn btn-altevia">Crear Usuario</button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light small text-uppercase text-muted">
+                        <tr><th>Usuario</th><th>Correo</th><th>Rol</th><th>Estado</th><th class="text-end">Acciones</th></tr>
+                    </thead>
+                    <tbody>
+                        <!-- Ejemplo visual (Estos datos vienen de AspNetUsers) -->
+                        <tr>
+                            <td class="fw-bold">superusuario</td>
+                            <td>super@altevia.com</td>
+                            <td>SuperUsuario</td>
+                            <td><span class="badge bg-success">Activo</span></td>
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-outline-secondary">Detalles</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">admin01</td>
+                            <td>admin@altevia.com</td>
+                            <td>Administrador</td>
+                            <td><span class="badge bg-success">Activo</span></td>
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-outline-primary">Editar</button>
+                                @if (esSuperUsuario)
+                                {<button class="btn btn-sm btn-outline-warning text-dark">Asignar rol</button>}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            @if (!esSuperUsuario)
+            {
+                <div class="alert alert-warning mt-3 mb-0" style="font-size: 0.85rem;">
+                    <i class="bi bi-lock-fill me-1"></i> <strong>Error de acceso:</strong> Solo el SuperUsuario puede asignar roles.
+                </div>
+            }
+        </div>
+
+        <!-- PESTAÑA PASAJEROS -->
+        <div class="tab-pane fade @(tabActiva == "pasajeros" ? "show active" : "")" id="pasajeros" role="tabpanel">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light small text-uppercase text-muted">
+                        <tr><th>Documento</th><th>Nombres y Apellidos</th><th>Correo</th><th>Teléfono</th><th>Registro</th><th class="text-end">Acciones</th></tr>
+                    </thead>
+                    <tbody>
+                        @if (pasajeros != null && pasajeros.Any())
+                        {
+                            foreach (var p in pasajeros)
+                            {
+                                <tr>
+                                    <td class="fw-bold">@p.TipoDocumentoCodigo<br /><span class="text-primary">@p.NumeroDocumento</span></td>
+                                    <td>@p.Apellidos, @p.Nombres</td>
+                                    <td>@(string.IsNullOrEmpty(p.Correo) ? "-" : p.Correo)</td>
+                                    <td>@(string.IsNullOrEmpty(p.Telefono) ? "-" : p.Telefono)</td>
+                                    <td>@p.FechaRegistro.ToString("dd/MM/yyyy")</td>
+                                    <td class="text-end">
+                                        <div class="btn-group shadow-sm" role="group">
+                                            <a href="@Url.Action("Edit", "Pasajeros", new { id=p.PasajeroId })" class="btn btn-sm btn-outline-primary" title="Editar"><i class="bi bi-pencil"></i></a>
+                                            <a href="@Url.Action("Details", "Pasajeros", new { id=p.PasajeroId })" class="btn btn-sm btn-outline-secondary" title="Detalles"><i class="bi bi-eye"></i></a>
+                                            <a href="@Url.Action("Delete", "Pasajeros", new { id=p.PasajeroId })" class="btn btn-sm btn-outline-danger" title="Eliminar"><i class="bi bi-trash"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PESTAÑA RESERVAS -->
+        <div class="tab-pane fade @(tabActiva == "reservas" ? "show active" : "")" id="reservas" role="tabpanel">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light small text-uppercase text-muted">
+                        <tr><th>Código</th><th>ID Usuario</th><th>Fecha Creación</th><th>Estado</th><th class="text-end">Acciones</th></tr>
+                    </thead>
+                    <tbody>
+                        @if (reservas != null && reservas.Any())
+                        {
+                            foreach (var r in reservas)
+                            {
+                                <tr>
+                                    <td class="fw-bold text-dark">@r.CodigoReserva</td>
+                                    <td><span class="badge bg-light text-dark border">@r.UsuarioId.Substring(0, 8)...</span></td>
+                                    <td>@r.FechaCreacion.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>
+                                        @if (r.EstadoReservaCodigo == "CONFIRMADA")
+                                        {<span class="badge bg-success">@r.EstadoReservaCodigo</span> }
+                                    else if (r.EstadoReservaCodigo == "PENDIENTE")
+                                    { <span class="badge bg-warning text-dark">@r.EstadoReservaCodigo</span> }
+                                else
+                                { <span class="badge bg-danger">@r.EstadoReservaCodigo</span>}
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="btn-group shadow-sm" role="group">
+                                            <a href="@Url.Action("Edit", "ReservasAdmin", new { id = r.ReservaId })" class="btn btn-sm btn-outline-primary" title="Editar"><i class="bi bi-pencil"></i></a>
+                                            <a href="@Url.Action("Details", "ReservasAdmin", new { id = r.ReservaId })" class="btn btn-sm btn-outline-secondary" title="Detalles"><i class="bi bi-eye"></i></a>
+                                            <a href="@Url.Action("Delete", "ReservasAdmin", new { id = r.ReservaId })" class="btn btn-sm btn-outline-danger" title="Eliminar"><i class="bi bi-trash"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Script simple para cambiar el color de las pestañas activas
+        $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+            $('button[data-bs-toggle="tab"]').css('background-color', '').removeClass('text-white fw-bold').addClass('text-muted');
+            $(e.target).css('background-color', 'var(--altevia-blue)').removeClass('text-muted').addClass('text-white fw-bold');
+        });
+    </script>
+}

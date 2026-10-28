@@ -1,0 +1,59 @@
+﻿@model Progra_03.Models.Reserva
+@{
+    ViewBag.Title = "Editar Reserva";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5 pt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card card-reserva border-0 shadow-sm">
+                <div class="card-header bg-dark-blue text-white py-3 border-0 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold" style="color: var(--altevia-gold);"><i class="bi bi-journal-check me-2"></i>Gestión de Reserva</h5>
+                    <span class="badge bg-light text-dark fs-6">@Model.CodigoReserva</span>
+                </div>
+                <div class="card-body p-4 p-md-5 bg-white">
+
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <!-- Claves ocultas fundamentales -->
+                        @Html.HiddenFor(model => model.ReservaId)
+                        @Html.HiddenFor(model => model.UsuarioId)
+                        @Html.HiddenFor(model => model.FechaCreacion)
+                        <input type="hidden" name="CodigoReserva" value="@Model.CodigoReserva" />
+
+                        <div class="row g-3">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger fw-bold mb-3" })
+
+                            <div class="col-12">
+                                <label class="form-label fw-bold text-muted small text-uppercase">ID de Usuario Propietario</label>
+                                <input type="text" class="form-control bg-light text-muted" value="@Model.UsuarioId" readonly />
+                            </div>
+
+                            <div class="col-12 mt-3">
+                                <label class="form-label fw-bold text-muted small text-uppercase">Estado de la Reserva <span class="text-danger">*</span></label>
+                                @Html.DropDownList("EstadoReservaCodigo", null, htmlAttributes: new { @class = "form-select border-primary fw-bold" })
+                                @Html.ValidationMessageFor(model => model.EstadoReservaCodigo, "", new { @class = "text-danger small" })
+                            </div>
+
+                            <div class="col-12 mt-3">
+                                <label class="form-label fw-bold text-muted small text-uppercase">Fecha de Expiración</label>
+                                <!-- Forzamos el formato datetime-local para evitar errores en navegadores modernos -->
+                                <input type="datetime-local" name="FechaExpiracion" class="form-control" value="@(Model.FechaExpiracion.HasValue ? Model.FechaExpiracion.Value.ToString("yyyy-MM-ddTHH:mm") : "")" />
+                                @Html.ValidationMessageFor(model => model.FechaExpiracion, "", new { @class = "text-danger small" })
+                                <div class="form-text small">Deje en blanco si la reserva ya está pagada o no expira.</div>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 pt-3 border-top d-flex gap-3">
+                            <button type="submit" class="btn btn-altevia px-4 shadow-sm">Guardar Cambios</button>
+                            <a href="@Url.Action("Gestion", "Admin", new { tab = "reservas" })" class="btn btn-outline-secondary px-4">Cancelar</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
