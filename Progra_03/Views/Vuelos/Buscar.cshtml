@@ -56,7 +56,7 @@
                                 {
                                     if (Request.IsAuthenticated)
                                     {
-                                        @Html.ActionLink("Seleccionar vuelo", "SeleccionAsiento", "Reservas", new { vueloId = vuelo.VueloId }, new { @class = "btn btn-altevia w-100" })
+                                        @Html.ActionLink("Seleccionar vuelo", "SeleccionAsiento", "Reservas", new { vueloId = vuelo.VueloId, pasajeros = ViewBag.Pasajeros }, new { @class = "btn btn-altevia w-100" })
                                     }
                                     else
                                     {
@@ -111,11 +111,11 @@
                                 {
                                     if (Request.IsAuthenticated)
                                     {
-                                        @Html.ActionLink("Seleccionar", "SeleccionAsiento", "Reservas", new { vueloId = tramo1.VueloId }, new { @class = "btn btn-altevia w-100" })
+                                        @Html.ActionLink("Seleccionar", "SeleccionAsiento", "Reservas", new { vueloId = tramo1.VueloId, pasajeros = ViewBag.Pasajeros }, new { @class = "btn btn-altevia w-100" })
                                     }
                                     else
                                     {
-                                        <a href="@Url.Action("Login", "Account", new { returnUrl = Url.Action("SeleccionAsiento", "Reservas", new { vueloId = tramo1.VueloId }) })" class="btn btn-altevia w-100">Seleccionar</a>
+                                        <a href="@Url.Action("Login", "Account", new { returnUrl = Url.Action("SeleccionAsiento", "Reservas", new { vueloId = tramo1.VueloId, pasajeros = ViewBag.Pasajeros }) })" class="btn btn-altevia w-100">Seleccionar</a>
                                     }
                                 }
                                 else

@@ -34,15 +34,19 @@ namespace Progra_03.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Pasajeros(int vueloId, int numeroAsiento)
+        public ActionResult Pasajeros(int vueloId, int[] numeroAsiento, string[] codigoAsiento)
         {
             var vuelo = db.vw_VueloDetalle.FirstOrDefault(v => v.VueloId == vueloId);
             if (vuelo == null) return HttpNotFound("Vuelo no encontrado.");
-            var asientoFisico = db.Asiento.FirstOrDefault(a => a.NumeroAsiento == numeroAsiento);
+
+            if (numeroAsiento == null || numeroAsiento.Length == 0)
+            {
+                return Content("Debe seleccionar al menos un asiento.");
+            }
 
             ViewBag.Vuelo = vuelo;
-            ViewBag.NumeroAsiento = numeroAsiento;
-            ViewBag.CodigoAsiento = asientoFisico != null ? asientoFisico.Codigo : numeroAsiento.ToString();
+            ViewBag.NumerosAsiento = numeroAsiento;
+            ViewBag.CodigosAsiento = codigoAsiento;
 
             return View();
         }

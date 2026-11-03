@@ -1,12 +1,17 @@
 @{
-    ViewBag.Title = "Datos del Pasajero";
+    ViewBag.Title = "Datos de los Pasajeros";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var vuelo = (Progra_03.Models.vw_VueloDetalle)ViewBag.Vuelo;
+
+    // Recuperamos los arreglos enviados por el controlador
+    int[] numeros = ViewBag.NumerosAsiento as int[];
+    string[] codigos = ViewBag.CodigosAsiento as string[];
+
+    int cantidad = numeros != null ? numeros.Length : 0;
 }
 
 <div class="container mt-5 pt-4 mb-5">
-
-
+    <!-- Indicador de Pasos -->
     <div class="d-flex justify-content-center mb-5">
         <div class="badge bg-success p-2 px-3 me-2 fw-bold" style="font-size: 0.9rem;"><i class="bi bi-check-circle"></i> 1. Asientos</div>
         <div class="badge bg-dark p-2 px-3 me-2 fw-bold" style="font-size: 0.9rem;">2. Pasajeros</div>
@@ -15,85 +20,85 @@
     </div>
 
     <div class="row">
-
+        <!-- Columna Izquierda: Formularios de Pasajeros -->
         <div class="col-md-8 mb-4">
-            <div class="card card-reserva border-0">
-                <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
-                    <h5 class="fw-bold" style="color: var(--altevia-blue);">Pasajero 1 &middot; Asiento @ViewBag.CodigoAsiento</h5>
+
+            @if (ViewBag.ErrorValidacion != null)
+            {
+                <div class="alert alert-danger fw-bold border-0 shadow-sm" style="background-color: #f8d7da; color: #721c24;">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> @ViewBag.ErrorValidacion
                 </div>
-                <div class="card-body p-4 px-5">
+            }
 
+            @using (Html.BeginForm("Confirmar", "Reservas", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="VueloId" value="@vuelo.VueloId" />
 
-                    @if (ViewBag.ErrorValidacion != null)
-                    {
-                        <div class="alert alert-danger fw-bold border-0 shadow-sm" style="background-color: #f8d7da; color: #721c24;">
-                            <i class="bi bi-exclamation-triangle-fill me-2"></i> @ViewBag.ErrorValidacion
+                <!-- Bucle para generar un formulario por cada asiento seleccionado -->
+                for (int i = 0; i < cantidad; i++)
+                {
+                    <div class="card card-reserva border-0 mb-4 shadow-sm">
+                        <div class="card-header bg-white border-bottom pt-4 pb-3 px-4 d-flex justify-content-between">
+                            <h5 class="fw-bold mb-0" style="color: var(--altevia-blue);">Pasajero @(i + 1)</h5>
+                            <span class="badge bg-dark fs-6 text-warning">Asiento @codigos[i]</span>
                         </div>
-                    }
+                        <div class="card-body p-4 px-5">
 
+                            <!-- Campos Ocultos para mantener la relación de asientos -->
+                            <input type="hidden" name="NumeroAsiento" value="@numeros[i]" />
+                            <input type="hidden" name="CodigoAsiento" value="@codigos[i]" />
 
-                    @using (Html.BeginForm("Confirmar", "Reservas", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
-                    {
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="VueloId" value="@vuelo.VueloId" />
-                        <input type="hidden" name="NumeroAsiento" value="@ViewBag.NumeroAsiento" />
-                        <input type="hidden" name="CodigoAsiento" value="@ViewBag.CodigoAsiento" />
+                            <div class="row g-4">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">Documento <span class="text-danger">*</span></label>
+                                    <select name="TipoDocumentoCodigo" class="form-select border-primary" required>
+                                        <option value="CEDULA" selected>Cédula</option>
+                                        <option value="PASAPORTE">Pasaporte</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="form-label fw-bold">Número de documento <span class="text-danger">*</span></label>
+                                    <input type="text" name="NumeroDocumento" class="form-control" required placeholder="Cédula o Pasaporte" pattern="[a-zA-Z0-9]+" maxlength="15" />
+                                </div>
 
-                        <div class="row g-4">
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Documento <span class="text-danger">*</span></label>
-                                <select name="TipoDocumentoCodigo" class="form-select" required>
-                                    <option value="CEDULA" selected>Cédula</option>
-                                    <option value="PASAPORTE">Pasaporte</option>
-                                </select>
-                            </div>
-                            <div class="col-md-8">
-                                <label class="form-label fw-bold">Número de documento <span class="text-danger">*</span></label>
+                                <div class="col-md-6 mt-4">
+                                    <label class="form-label fw-bold">Nombres <span class="text-danger">*</span></label>
+                                    <input type="text" name="Nombres" class="form-control" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+" title="Solo se permiten letras" />
+                                </div>
+                                <div class="col-md-6 mt-4">
+                                    <label class="form-label fw-bold">Apellidos <span class="text-danger">*</span></label>
+                                    <input type="text" name="Apellidos" class="form-control" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+" title="Solo se permiten letras" />
+                                </div>
 
-                                <input type="text" name="NumeroDocumento" class="form-control" required placeholder="Ej: 17xxxxxx" value="@ViewBag.NumeroDocumento" pattern="[0-9]+" title="Solo se permiten números" maxlength="15" />
-                            </div>
-
-                            <div class="col-md-6 mt-4">
-                                <label class="form-label fw-bold">Nombres <span class="text-danger">*</span></label>
-
-                                <input type="text" name="Nombres" class="form-control" required value="@ViewBag.Nombres" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+" title="Solo se permiten letras" />
-                            </div>
-                            <div class="col-md-6 mt-4">
-                                <label class="form-label fw-bold">Apellidos <span class="text-danger">*</span></label>
-
-                                <input type="text" name="Apellidos" class="form-control" required value="@ViewBag.Apellidos" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+" title="Solo se permiten letras" />
-                            </div>
-
-                            <div class="col-md-4 mt-4">
-                                <label class="form-label fw-bold">Nacimiento <span class="text-muted fw-normal">(Opcional)</span></label>
-                                <input type="date" name="FechaNacimiento" class="form-control" max="@DateTime.Now.ToString("yyyy-MM-dd")" value="@ViewBag.FechaNacimiento" />
-                            </div>
-                            <div class="col-md-4 mt-4">
-                                <label class="form-label fw-bold">Correo <span class="text-muted fw-normal">(Opcional)</span></label>
-
-                                <input type="email" name="Correo" class="form-control" placeholder="correo@ejemplo.com" value="@ViewBag.Correo" pattern="[a-zA-Z0-9._%+-]+[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" title="Ingrese un correo electrónico válido" />
-                            </div>
-                            <div class="col-md-4 mt-4">
-                                <label class="form-label fw-bold">Teléfono <span class="text-muted fw-normal">(Opcional)</span></label>
-
-                                <input type="tel" name="Telefono" class="form-control" placeholder="Ej: 0999999999" value="@ViewBag.Telefono" pattern="[0-9]{10}" title="Debe contener exactamente 10 números" maxlength="10" />
+                                <div class="col-md-4 mt-4">
+                                    <label class="form-label fw-bold small text-muted">Nacimiento (Opcional)</label>
+                                    <input type="date" name="FechaNacimiento" class="form-control" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                                </div>
+                                <div class="col-md-4 mt-4">
+                                    <label class="form-label fw-bold small text-muted">Correo (Opcional)</label>
+                                    <input type="email" name="Correo" class="form-control" placeholder="correo@ejemplo.com" />
+                                </div>
+                                <div class="col-md-4 mt-4">
+                                    <label class="form-label fw-bold small text-muted">Teléfono (Opcional)</label>
+                                    <input type="tel" name="Telefono" class="form-control" placeholder="Ej: 0999999999" pattern="[0-9]{10}" maxlength="10" />
+                                </div>
                             </div>
                         </div>
+                    </div>
+                }
 
-                        <div class="mt-5 pt-4 border-top d-flex gap-3">
-                            <button type="submit" class="btn btn-altevia px-4">Continuar a Reserva</button>
-                            <a href="@Url.Action("SeleccionAsiento", "Reservas", new { vueloId = vuelo.VueloId })" class="btn btn-outline-gold">Regresar</a>
-                        </div>
-                    }
+                <div class="mt-4 pt-3 d-flex gap-3">
+                    <button type="submit" class="btn btn-altevia px-5 py-3 fw-bold fs-6 shadow-sm w-100">Confirmar Reserva de @cantidad Pasajero(s)</button>
                 </div>
-            </div>
+            }
         </div>
 
-
+        <!-- Columna Derecha: Resumen Lateral -->
         <div class="col-md-4">
-            <div class="card card-reserva bg-light border-0 p-2">
+            <div class="card card-reserva bg-light border-0 p-2 shadow-sm sticky-top" style="top: 100px;">
                 <div class="card-header bg-transparent border-0 pt-4">
-                    <h6 class="text-uppercase fw-bold" style="color: var(--altevia-gold); letter-spacing: 1px;">Resumen de Reserva</h6>
+                    <h6 class="text-uppercase fw-bold" style="color: var(--altevia-gold); letter-spacing: 1px;"><i class="bi bi-receipt-cutoff me-2"></i>Resumen de Reserva</h6>
                 </div>
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-3 border-bottom pb-2">
@@ -109,17 +114,19 @@
                         <span class="fw-bold small" style="color: var(--altevia-blue);">@vuelo.HoraSalida.ToString(@"hh\:mm") - @vuelo.HoraLlegada.ToString(@"hh\:mm")</span>
                     </div>
                     <div class="d-flex justify-content-between mb-3 border-bottom pb-2">
-                        <span class="text-muted small">Asiento</span>
-                        <span class="fw-bold small" style="color: var(--altevia-blue);">@ViewBag.CodigoAsiento</span>
+                        <span class="text-muted small">Total Asientos</span>
+                        <span class="fw-bold small" style="color: var(--altevia-blue);">@cantidad ( @string.Join(", ", codigos) )</span>
                     </div>
                     <div class="d-flex justify-content-between mt-4">
                         <span class="text-muted fw-bold">Total referencial</span>
-                        <span class="fw-bold fs-5" style="color: var(--altevia-gold);">$@vuelo.TarifaReferencial USD</span>
+                        <span class="fw-bold fs-4" style="color: var(--altevia-gold);">$@(vuelo.TarifaReferencial * cantidad) USD</span>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-top text-center">
+                        <a href="@Url.Action("SeleccionAsiento", "Reservas", new { vueloId = vuelo.VueloId, pasajeros = cantidad })" class="btn btn-outline-secondary w-100">Modificar Asientos</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-}
