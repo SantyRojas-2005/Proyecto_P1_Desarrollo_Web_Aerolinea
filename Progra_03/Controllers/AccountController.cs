@@ -126,21 +126,31 @@ namespace Progra_03.Controllers
         {
             if (ModelState.IsValid)
             {
-
-                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email };
-
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
+
                 if (result.Succeeded)
                 {
-                    await UserManager.AddToRoleAsync(user.Id, "Cliente");
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
 
+                    string rolAsignar = "Cliente";
+
+
+                    if (User.Identity.IsAuthenticated && User.IsInRole("SuperUsuario") && !string.IsNullOrEmpty(model.RolSeleccionado))
+                    {
+                        rolAsignar = model.RolSeleccionado;
+                    }
+
+                    await UserManager.AddToRoleAsync(user.Id, rolAsignar);
+
+                    if (!User.Identity.IsAuthenticated)
+                    {
+                        await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    }
 
                     return RedirectToAction("Index", "Home");
                 }
                 AddErrors(result);
             }
-
             return View(model);
         }
         [AllowAnonymous]

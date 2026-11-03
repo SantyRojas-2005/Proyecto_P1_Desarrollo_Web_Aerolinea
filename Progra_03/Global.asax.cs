@@ -29,7 +29,8 @@ namespace Progra_03
             var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
             var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
 
-            string[] roles = { "SuperUsuario", "Administrador", "Cliente" };
+            // 1. Crear los 4 roles obligatorios
+            string[] roles = { "SuperUsuario", "Administrador", "Counter", "Cliente" };
             foreach (var role in roles)
             {
                 if (!roleManager.RoleExists(role))
@@ -38,25 +39,33 @@ namespace Progra_03
                 }
             }
 
-            if (userManager.FindByEmail("superadmin@hotmail.com") == null)
+            // 2. Crear cuentas base (Contraseñas seguras requeridas por Identity)
+            if (userManager.FindByEmail("superadmin@altevia.com") == null)
             {
-                var superAdmin = new ApplicationUser { UserName = "SuperAdmin", Email = "superadmin@hotmail.com" };
-                var result = userManager.Create(superAdmin, "Superadmin123*");
-                if (result.Succeeded) userManager.AddToRole(superAdmin.Id, "SuperUsuario");
+                var superAdmin = new ApplicationUser { UserName = "SuperAdmin", Email = "superadmin@altevia.com" };
+                if (userManager.Create(superAdmin, "Superadmin123*").Succeeded)
+                    userManager.AddToRole(superAdmin.Id, "SuperUsuario");
             }
 
-            if (userManager.FindByEmail("administrador@hotmail.com") == null)
+            if (userManager.FindByEmail("administrador@altevia.com") == null)
             {
-                var admin = new ApplicationUser { UserName = "Administrador", Email = "administrador@hotmail.com" };
-                var result = userManager.Create(admin, "Administrador123*");
-                if (result.Succeeded) userManager.AddToRole(admin.Id, "Administrador");
+                var admin = new ApplicationUser { UserName = "Administrador", Email = "administrador@altevia.com" };
+                if (userManager.Create(admin, "Administrador123*").Succeeded)
+                    userManager.AddToRole(admin.Id, "Administrador");
             }
 
-            if (userManager.FindByEmail("cliente@hotmail.com") == null)
+            if (userManager.FindByEmail("counter@altevia.com") == null)
             {
-                var cliente = new ApplicationUser { UserName = "Cliente", Email = "cliente@hotmail.com" };
-                var result = userManager.Create(cliente, "Cliente123*");
-                if (result.Succeeded) userManager.AddToRole(cliente.Id, "Cliente");
+                var counter = new ApplicationUser { UserName = "Counter", Email = "counter@altevia.com" };
+                if (userManager.Create(counter, "Counter123*").Succeeded)
+                    userManager.AddToRole(counter.Id, "Counter");
+            }
+
+            if (userManager.FindByEmail("cliente@altevia.com") == null)
+            {
+                var cliente = new ApplicationUser { UserName = "Cliente", Email = "cliente@altevia.com" };
+                if (userManager.Create(cliente, "Cliente123*").Succeeded)
+                    userManager.AddToRole(cliente.Id, "Cliente");
             }
         }
     }
