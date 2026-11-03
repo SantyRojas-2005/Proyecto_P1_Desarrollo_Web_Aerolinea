@@ -7,6 +7,7 @@
 
     string GetClaseAsiento(string estado)
     {
+        // Colores obligatorios según rúbrica (Ítem 12)
         if (estado == "DISPONIBLE") return "asiento-disponible asiento-clickable";
         if (estado == "OCUPADO") return "asiento-ocupado disabled";
         if (estado == "RESERVADO") return "asiento-reservado disabled";
@@ -14,9 +15,37 @@
     }
 }
 
+<style>
+    /* Semántica de colores obligatoria */
+    .asiento-disponible {
+        background-color: #198754 !important;
+        color: white;
+        border: 2px solid #146c43;
+    }
+    /* Verde */
+    .asiento-ocupado {
+        background-color: #dc3545 !important;
+        color: white;
+        border: 2px solid #b02a37;
+        opacity: 0.8;
+    }
+    /* Rojo */
+    .asiento-reservado {
+        background-color: #6f42c1 !important;
+        color: white;
+        border: 2px solid #59339d;
+        opacity: 0.8;
+    }
+    /* Morado */
+    .asiento-seleccionado {
+        background-color: #000000 !important;
+        color: white;
+        border: 3px solid #ffc107 !important;
+    }
+    /* Su selección */
+</style>
+
 <div class="container mt-4 mb-5">
-
-
     <div class="d-flex justify-content-center mb-4">
         <div class="badge bg-dark p-2 px-3 me-2 fw-bold" style="font-size: 0.9rem;">1. Asientos</div>
         <div class="badge bg-light text-muted border p-2 px-3 me-2" style="font-size: 0.9rem;">2. Pasajeros</div>
@@ -24,21 +53,21 @@
         <div class="badge bg-light text-muted border p-2 px-3" style="font-size: 0.9rem;">4. Pago</div>
     </div>
 
-
-    <div class="card card-altevia mb-4">
-        <div class="card-body p-3 d-flex justify-content-between align-items-center">
+    <div class="card card-altevia mb-4 shadow-sm border-0">
+        <div class="card-body p-4 d-flex justify-content-between align-items-center">
             <div>
                 <h5 class="fw-bold mb-0" style="color: var(--altevia-blue);">Vuelo @vuelo.CodigoVuelo</h5>
                 <p class="text-muted mb-0 small">@vuelo.CiudadOrigen &rarr; @vuelo.CiudadDestino &middot; @vuelo.FechaOperacion.ToString("dd/MM/yyyy")</p>
             </div>
             <div class="text-end">
                 <p class="mb-0 fw-bold">@vuelo.HoraSalida.ToString(@"hh\:mm") - @vuelo.HoraLlegada.ToString(@"hh\:mm")</p>
+                <span class="badge bg-primary">Seleccione @ViewBag.Pasajeros asiento(s)</span>
             </div>
         </div>
     </div>
 
-
-    <div class="card card-altevia mb-4 overflow-auto">
+    <!-- Mapa del Avión -->
+    <div class="card card-altevia mb-4 overflow-auto border-0 shadow-sm">
         <div class="card-body p-5 text-center" style="min-width: 800px;">
             <p class="text-muted small fw-bold mb-4 text-start ms-5">&larr; Proa (frente)</p>
 
@@ -95,25 +124,35 @@
                     <div class="text-muted small border rounded p-2" style="background-color: #fafafa;">EQUIPAJE</div>
                 </div>
             </div>
+
+            <!-- Leyenda visual -->
+            <div class="mt-4 d-flex justify-content-center gap-4">
+                <div><span class="badge asiento-disponible p-2 border me-2">&nbsp;&nbsp;&nbsp;</span> Disponible</div>
+                <div><span class="badge asiento-reservado p-2 border me-2">&nbsp;&nbsp;&nbsp;</span> Reservado</div>
+                <div><span class="badge asiento-ocupado p-2 border me-2">&nbsp;&nbsp;&nbsp;</span> Ocupado</div>
+                <div><span class="badge asiento-seleccionado p-2 border me-2">&nbsp;&nbsp;&nbsp;</span> Su selección</div>
+            </div>
         </div>
     </div>
 
-
+    <!-- Panel Inferior -->
     <div class="row">
         <div class="col-md-7 mb-3">
             <div class="alert alert-info border-0 shadow-sm" style="background-color: rgba(212, 175, 55, 0.1); color: var(--altevia-blue);">
                 <i class="bi bi-info-circle-fill" style="color: var(--altevia-gold);"></i>
-                <strong>Información:</strong> Su selección es temporal: la reserva se registrará al confirmar en el paso 3.
+                <strong>Información:</strong> Su selección es temporal; la reserva se registrará al confirmar en el paso 3.
             </div>
         </div>
         <div class="col-md-5 text-md-end">
-            @using (Html.BeginForm("Pasajeros", "Reservas", FormMethod.Post))
+            @using (Html.BeginForm("Pasajeros", "Reservas", FormMethod.Post, new { id = "formSeleccion" }))
             {
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="vueloId" value="@vuelo.VueloId" />
-                <input type="hidden" name="numeroAsiento" id="asientoSeleccionado" value="" />
 
-                <h5 class="mb-3">Asiento seleccionado: <span id="textoAsiento" class="fw-bold" style="color: var(--altevia-gold);">Ninguno</span></h5>
+                <!-- Contenedor donde jQuery inyectará los arreglos -->
+                <div id="hiddenInputsContainer"></div>
+
+                <h5 class="mb-3">Asientos: <span id="textoAsiento" class="fw-bold" style="color: var(--altevia-gold);">Ninguno</span></h5>
 
                 <a href="@Url.Action("Disponibilidad", "Vuelos", new { id = vuelo.VueloId })" class="btn btn-outline-altevia me-2">Regresar</a>
                 <button type="submit" id="btnContinuar" class="btn btn-altevia" disabled>Continuar</button>
@@ -125,15 +164,51 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
+            var maxPasajeros = @ViewBag.Pasajeros;
+            var seleccionados = [];
+
             $('.asiento-clickable').click(function () {
-                $('.asiento-clickable').removeClass('asiento-seleccionado').css('background-color', '#28a745');
-                $(this).addClass('asiento-seleccionado').css('background-color', '#000000');
-                var codigoAsiento = $(this).data('codigo');
-                var numAsiento = $(this).data('numero');
-                $('#textoAsiento').text(codigoAsiento);
-                $('#asientoSeleccionado').val(numAsiento);
-                $('#btnContinuar').prop('disabled', false);
+                var btn = $(this);
+                var num = btn.data('numero');
+                var cod = btn.data('codigo');
+
+                if (btn.hasClass('asiento-seleccionado')) {
+                    // Quitar selección
+                    btn.removeClass('asiento-seleccionado');
+                    seleccionados = seleccionados.filter(function (s) { return s.num !== num; });
+                } else {
+                    // Agregar selección si no supera el límite
+                    if (seleccionados.length < maxPasajeros) {
+                        btn.addClass('asiento-seleccionado');
+                        seleccionados.push({ num: num, cod: cod });
+                    } else {
+                        alert("Ya ha seleccionado los " + maxPasajeros + " asientos requeridos.");
+                    }
+                }
+                actualizarEstado();
             });
+
+            function actualizarEstado() {
+                var container = $('#hiddenInputsContainer');
+                container.empty();
+                var codigos = [];
+
+                seleccionados.forEach(function (asiento) {
+                    // Inyecta el array "[]" para que MVC lo capture como int[] y string[]
+                    container.append('<input type="hidden" name="numeroAsiento" value="' + asiento.num + '" />');
+                    container.append('<input type="hidden" name="codigoAsiento" value="' + asiento.cod + '" />');
+                    codigos.push(asiento.cod);
+                });
+
+                if (codigos.length > 0) {
+                    $('#textoAsiento').text(codigos.join(', '));
+                } else {
+                    $('#textoAsiento').text('Ninguno');
+                }
+
+                // Habilita el botón solo si seleccionó exactamente la cantidad de pasajeros
+                $('#btnContinuar').prop('disabled', seleccionados.length !== maxPasajeros);
+            }
         });
     </script>
-}}
+}

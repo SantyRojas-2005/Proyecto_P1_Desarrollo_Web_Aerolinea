@@ -102,7 +102,10 @@
 
                         <div class="col-md-4 text-md-end">
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <button class="btn btn-outline-altevia w-100 mb-2 mb-md-0" disabled>Ver detalles</button>
+                                <!-- Botón que despliega los detalles -->
+                                <button class="btn btn-outline-altevia w-100 mb-2 mb-md-0" type="button" data-bs-toggle="collapse" data-bs-target="#detallesEscala">
+                                    Ver detalles
+                                </button>
 
                                 @if (esValidaEscala)
                                 {
@@ -120,6 +123,15 @@
                                     <button class="btn btn-secondary w-100 disabled" disabled>Sin asientos</button>
                                 }
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Panel colapsable con los detalles de los tramos (Misma zona de visibilidad de las variables) -->
+                    <div class="collapse mt-3" id="detallesEscala">
+                        <div class="card card-body bg-light border-0 small">
+                            <strong class="text-primary mb-2">Itinerario detallado:</strong>
+                            <p class="mb-1"><strong>Tramo 1 (VIP@(tramo1.VueloId.ToString("D5"))):</strong> Sale de @tramo1.Origen a las @tramo1.HoraSalida.ToString(@"hh\:mm") y llega a @tramo1.Destino a las @tramo1.HoraLlegada.ToString(@"hh\:mm"). Aeronave: @(string.IsNullOrEmpty(tramo1.Matricula) ? "Pendiente" : tramo1.Matricula).</p>
+                            <p class="mb-0"><strong>Tramo 2 (VIP@(tramo2.VueloId.ToString("D5"))):</strong> Sale de @tramo2.Origen a las @tramo2.HoraSalida.ToString(@"hh\:mm") y llega a @tramo2.Destino a las @tramo2.HoraLlegada.ToString(@"hh\:mm"). Aeronave: @(string.IsNullOrEmpty(tramo2.Matricula) ? "Pendiente" : tramo2.Matricula).</p>
                         </div>
                     </div>
                 </div>

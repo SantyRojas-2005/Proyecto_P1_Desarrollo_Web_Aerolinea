@@ -13,7 +13,8 @@ namespace Progra_03.Controllers
     public class ReservasController : Controller
     {
         private AerolineaVIPContext db = new AerolineaVIPContext();
-        public ActionResult SeleccionAsiento(int vueloId)
+        // GET: Reservas/SeleccionAsiento/5
+        public ActionResult SeleccionAsiento(int vueloId, int pasajeros = 1)
         {
             var vuelo = db.vw_VueloDetalle.FirstOrDefault(v => v.VueloId == vueloId);
             if (vuelo == null)
@@ -26,6 +27,8 @@ namespace Progra_03.Controllers
                              .ToList();
 
             ViewBag.Vuelo = vuelo;
+            ViewBag.Pasajeros = pasajeros;
+
             return View(asientos);
         }
 
@@ -126,8 +129,11 @@ namespace Progra_03.Controllers
                             Nombres = Nombres[i].ToUpper(),
                             Apellidos = Apellidos[i].ToUpper(),
                             FechaNacimiento = string.IsNullOrEmpty(FechaNacimiento[i]) ? (DateTime?)null : DateTime.Parse(FechaNacimiento[i]),
-                            Correo = Correo[i],
-                            Telefono = Telefono[i],
+
+                            // CORRECCIÓN VITAL PARA EVITAR ERROR EN SQL SERVER
+                            Correo = string.IsNullOrWhiteSpace(Correo[i]) ? null : Correo[i].Trim(),
+                            Telefono = string.IsNullOrWhiteSpace(Telefono[i]) ? null : Telefono[i].Trim(),
+
                             FechaRegistro = DateTime.Now
                         };
                         db.Pasajero.Add(pasajero);
