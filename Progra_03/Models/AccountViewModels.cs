@@ -65,25 +65,38 @@ namespace Progra_03.Models
 
     public class RegisterViewModel
     {
-        [Required]
-        [Display(Name = "Nombre de usuario")]
-        public string UserName { get; set; }
+        [Required(ErrorMessage = "Los nombres son obligatorios.")]
+        [StringLength(100)]
+        [Display(Name = "Nombres")]
+        public string Nombres { get; set; }
 
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage = "Los apellidos son obligatorios.")]
+        [StringLength(100)]
+        [Display(Name = "Apellidos")]
+        public string Apellidos { get; set; }
+
+        [Required(ErrorMessage = "El correo es obligatorio.")]
+        [EmailAddress(ErrorMessage = "Formato de correo inválido.")]
         [Display(Name = "Correo electrónico")]
         public string Email { get; set; }
 
-        [Required]
-        [StringLength(100, ErrorMessage = "El número de caracteres de {0} debe ser al menos {2}.", MinimumLength = 3)]
+        [Required(ErrorMessage = "La contraseña es obligatoria.")]
+        [StringLength(100, ErrorMessage = "La contraseña debe tener al menos {2} caracteres.", MinimumLength = 8)]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$", ErrorMessage = "Debe tener mayúscula, minúscula, número y símbolo.")]
         [DataType(DataType.Password)]
         [Display(Name = "Contraseña")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirmar contraseña")]
-        [Compare("Password", ErrorMessage = "La contraseña y la contraseña de confirmación no coinciden.")]
+        [Compare("Password", ErrorMessage = "Las contraseñas no coinciden.")]
         public string ConfirmPassword { get; set; }
+
+        [Display(Name = "Rol")]
+        public string RolSeleccionado { get; set; }
+
+        [Range(typeof(bool), "true", "true", ErrorMessage = "Debe aceptar el aviso de privacidad y condiciones.")]
+        public bool AceptaCondiciones { get; set; }
     }
 
     public class ResetPasswordViewModel
