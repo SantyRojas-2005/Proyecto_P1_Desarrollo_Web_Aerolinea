@@ -1,11 +1,14 @@
-@model IEnumerable<Progra_03.Models.vw_VueloDetalle>
+@model IEnumerable<Progra_03.Models.vw_DisponibilidadVuelo>
 @{
     ViewBag.Title = "Resultados de vuelos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool esEscala = ViewBag.EsEscala != null ? (bool)ViewBag.EsEscala : false;
 }
 
 <div class="container mt-5 pt-5 mb-5">
     <h2 style="color: var(--altevia-blue);">Resultados de vuelos</h2>
 
+    <!-- Resumen de búsqueda -->
     <div class="d-flex flex-wrap align-items-center mb-4 text-muted border-bottom pb-2">
         <span class="me-3 fw-bold text-dark">
             <i class="bi bi-geo-alt-fill" style="color: var(--altevia-gold);"></i>
@@ -13,44 +16,43 @@
         </span>
         <span class="me-3"><i class="bi bi-calendar-event"></i> Fecha: @ViewBag.Fecha</span>
         <span class="me-3"><i class="bi bi-person"></i> @ViewBag.Pasajeros pasajeros</span>
-
         @Html.ActionLink("Modificar búsqueda", "Index", "Home", null, new { @class = "ms-auto text-decoration-none", style = "color: var(--altevia-blue); font-weight: 600;" })
     </div>
 
-    @if (Model != null && Model.Any())
+    @if ((Model != null && Model.Any()) || esEscala)
     {
+        <!-- VUELOS DIRECTOS -->
         foreach (var vuelo in Model)
         {
-            <div class="card card-altevia mb-4">
+            // Validaciones de negocio para habilitar reserva
+            bool hayCupo = vuelo.Disponibles >= ViewBag.Pasajeros;
+            bool tieneAeronave = !string.IsNullOrEmpty(vuelo.Matricula);
+            bool esValido = hayCupo && tieneAeronave && vuelo.EstadoVueloCodigo != "CANCELADO" && vuelo.EstadoVueloCodigo != "COMPLETADO";
+
+            <div class="card card-altevia mb-4 shadow-sm border-0">
                 <div class="card-body p-4">
                     <div class="row align-items-center">
                         <div class="col-md-5 mb-3 mb-md-0">
-                            <h4 class="fw-bold mb-1" style="color: var(--altevia-blue);">
-                                @vuelo.HoraSalida.ToString(@"hh\:mm") - @vuelo.HoraLlegada.ToString(@"hh\:mm")
-                            </h4>
+                            <h4 class="fw-bold mb-1" style="color: var(--altevia-blue);">@vuelo.HoraSalida.ToString(@"hh\:mm") - @vuelo.HoraLlegada.ToString(@"hh\:mm")</h4>
                             <p class="text-muted mb-1">
-                                <strong>@vuelo.CodigoVuelo</strong> &middot; Directo &middot; Aeronave: @(string.IsNullOrEmpty(vuelo.AeronaveId.ToString()) ? "Sin asignar" : "Confirmada")
+                                <strong>@vuelo.CodigoVuelo</strong> &middot; Vuelo Directo &middot;
+                                Aeronave: @(tieneAeronave ? vuelo.Matricula : "Sin asignar")
                             </p>
+                            @if (tieneAeronave)
+                            {
+                                <span class="badge bg-light text-dark border"><i class="bi bi-person-check-fill text-success"></i> @vuelo.Disponibles de @vuelo.Capacidad disponibles</span>
+                            }
                         </div>
 
                         <div class="col-md-3 text-md-center mb-3 mb-md-0">
-                            <span class="badge bg-light text-dark border p-2 mb-2" style="font-size: 0.85rem;">
-                                Estado: @vuelo.EstadoVueloCodigo
-                            </span>
-                            <h5 class="fw-bold" style="color: var(--altevia-gold);">
-                                $@vuelo.TarifaReferencial USD
-                            </h5>
+                            <span class="badge bg-light text-dark border p-2 mb-2">Estado: @vuelo.EstadoVueloCodigo</span>
                         </div>
 
                         <div class="col-md-4 text-md-end">
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                 @Html.ActionLink("Consultar disponibilidad", "Disponibilidad", "Vuelos", new { id = vuelo.VueloId }, new { @class = "btn btn-outline-altevia w-100 mb-2 mb-md-0" })
 
-                                @if (vuelo.EstadoVueloCodigo == "CANCELADO" || vuelo.EstadoVueloCodigo == "COMPLETADO")
-                                {
-                                    <button class="btn btn-secondary w-100 disabled" disabled>Vuelo no disponible</button>
-                                }
-                                else
+                                @if (esValido)
                                 {
                                     if (Request.IsAuthenticated)
                                     {
@@ -60,6 +62,62 @@
                                     {
                                         <a href="@Url.Action("Login", "Account", new { returnUrl = Url.Action("SeleccionAsiento", "Reservas", new { vueloId = vuelo.VueloId }) })" class="btn btn-altevia w-100">Seleccionar vuelo</a>
                                     }
+                                }
+                                else
+                                {
+                                    <button class="btn btn-secondary w-100 disabled" disabled>
+                                        @(tieneAeronave ? "Sin asientos disponibles" : "Vuelo no habilitado")
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- VARIANTE: ITINERARIO CON ESCALA (GALÁPAGOS) -->
+        if (esEscala)
+        {
+            var tramo1 = (Progra_03.Models.vw_DisponibilidadVuelo)ViewBag.Tramo1;
+            var tramo2 = (Progra_03.Models.vw_DisponibilidadVuelo)ViewBag.Tramo2;
+
+            bool hayCupoEscala = tramo1.Disponibles >= ViewBag.Pasajeros && tramo2.Disponibles >= ViewBag.Pasajeros;
+            bool tienenAeronave = !string.IsNullOrEmpty(tramo1.Matricula) && !string.IsNullOrEmpty(tramo2.Matricula);
+            bool esValidaEscala = hayCupoEscala && tienenAeronave && tramo1.EstadoVueloCodigo != "CANCELADO";
+
+            <div class="card card-altevia mb-4 shadow-sm border-2 border-primary">
+                <div class="card-header bg-light py-3 border-bottom">
+                    <h6 class="mb-0 fw-bold text-dark"><i class="bi bi-signpost-split-fill text-primary me-2"></i>Variante: Itinerario con escala en Guayaquil</h6>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8 mb-3 mb-md-0">
+                            <p class="mb-2 text-muted small"><strong>Tramo 1:</strong> @tramo1.HoraSalida.ToString(@"hh\:mm") - @tramo1.HoraLlegada.ToString(@"hh\:mm") Quito &rarr; Guayaquil (@tramo1.CodigoVuelo)</p>
+                            <p class="mb-3 text-muted small"><strong>Tramo 2:</strong> @tramo2.HoraSalida.ToString(@"hh\:mm") - @tramo2.HoraLlegada.ToString(@"hh\:mm") Guayaquil &rarr; Galápagos (@tramo2.CodigoVuelo)</p>
+
+                            <span class="badge bg-light text-dark border">Tramo 1: @tramo1.Disponibles disp.</span>
+                            <span class="badge bg-light text-dark border ms-2">Tramo 2: @tramo2.Disponibles disp.</span>
+                        </div>
+
+                        <div class="col-md-4 text-md-end">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button class="btn btn-outline-altevia w-100 mb-2 mb-md-0" disabled>Ver detalles</button>
+
+                                @if (esValidaEscala)
+                                {
+                                    if (Request.IsAuthenticated)
+                                    {
+                                        @Html.ActionLink("Seleccionar", "SeleccionAsiento", "Reservas", new { vueloId = tramo1.VueloId }, new { @class = "btn btn-altevia w-100" })
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.Action("Login", "Account", new { returnUrl = Url.Action("SeleccionAsiento", "Reservas", new { vueloId = tramo1.VueloId }) })" class="btn btn-altevia w-100">Seleccionar</a>
+                                    }
+                                }
+                                else
+                                {
+                                    <button class="btn btn-secondary w-100 disabled" disabled>Sin asientos</button>
                                 }
                             </div>
                         </div>
