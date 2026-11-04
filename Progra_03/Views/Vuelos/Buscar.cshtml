@@ -24,10 +24,13 @@
         <!-- VUELOS DIRECTOS -->
         foreach (var vuelo in Model)
         {
-            // Validaciones de negocio para habilitar reserva
+            // Validaciones de tiempo y negocio para habilitar reserva
+            DateTime fechaHoraSalida = vuelo.FechaOperacion.Add(vuelo.HoraSalida);
+            bool yaPaso = fechaHoraSalida <= DateTime.Now;
+
             bool hayCupo = vuelo.Disponibles >= ViewBag.Pasajeros;
             bool tieneAeronave = !string.IsNullOrEmpty(vuelo.Matricula);
-            bool esValido = hayCupo && tieneAeronave && vuelo.EstadoVueloCodigo != "CANCELADO" && vuelo.EstadoVueloCodigo != "COMPLETADO";
+            bool esValido = hayCupo && tieneAeronave && !yaPaso && vuelo.EstadoVueloCodigo != "CANCELADO" && vuelo.EstadoVueloCodigo != "COMPLETADO";
 
             <div class="card card-altevia mb-4 shadow-sm border-0">
                 <div class="card-body p-4">
@@ -60,13 +63,13 @@
                                     }
                                     else
                                     {
-                                        <a href="@Url.Action("Login", "Account", new { returnUrl = Url.Action("SeleccionAsiento", "Reservas", new { vueloId = vuelo.VueloId }) })" class="btn btn-altevia w-100">Seleccionar vuelo</a>
+                                        <a href="@Url.Action("Login", "Account", new { returnUrl = Url.Action("SeleccionAsiento", "Reservas", new { vueloId = vuelo.VueloId, pasajeros = ViewBag.Pasajeros }) })" class="btn btn-altevia w-100">Seleccionar vuelo</a>
                                     }
                                 }
                                 else
                                 {
                                     <button class="btn btn-secondary w-100 disabled" disabled>
-                                        @(tieneAeronave ? "Sin asientos disponibles" : "Vuelo no habilitado")
+                                        @(yaPaso ? "Vuelo cerrado" : (tieneAeronave ? "Sin asientos disponibles" : "Vuelo no habilitado"))
                                     </button>
                                 }
                             </div>
@@ -82,9 +85,12 @@
             var tramo1 = (Progra_03.Models.vw_DisponibilidadVuelo)ViewBag.Tramo1;
             var tramo2 = (Progra_03.Models.vw_DisponibilidadVuelo)ViewBag.Tramo2;
 
+            DateTime fechaHoraSalidaEscala = tramo1.FechaOperacion.Add(tramo1.HoraSalida);
+            bool yaPasoEscala = fechaHoraSalidaEscala <= DateTime.Now;
+
             bool hayCupoEscala = tramo1.Disponibles >= ViewBag.Pasajeros && tramo2.Disponibles >= ViewBag.Pasajeros;
             bool tienenAeronave = !string.IsNullOrEmpty(tramo1.Matricula) && !string.IsNullOrEmpty(tramo2.Matricula);
-            bool esValidaEscala = hayCupoEscala && tienenAeronave && tramo1.EstadoVueloCodigo != "CANCELADO";
+            bool esValidaEscala = hayCupoEscala && tienenAeronave && !yaPasoEscala && tramo1.EstadoVueloCodigo != "CANCELADO";
 
             <div class="card card-altevia mb-4 shadow-sm border-2 border-primary">
                 <div class="card-header bg-light py-3 border-bottom">
@@ -120,7 +126,9 @@
                                 }
                                 else
                                 {
-                                    <button class="btn btn-secondary w-100 disabled" disabled>Sin asientos</button>
+                                    <button class="btn btn-secondary w-100 disabled" disabled>
+                                        @(yaPasoEscala ? "Vuelo cerrado" : "Sin asientos")
+                                    </button>
                                 }
                             </div>
                         </div>
