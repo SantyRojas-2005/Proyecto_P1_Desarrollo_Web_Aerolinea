@@ -40,125 +40,93 @@
     </ul>
 
 
-    <div class="tab-content bg-white p-4 shadow-sm border rounded" id="gestionTabsContent">
-
-
-        <div class="tab-pane fade @(tabActiva == "usuarios" ? "show active" : "")" id="usuarios" role="tabpanel">
-            <div class="d-flex justify-content-between mb-3">
-                <input type="text" class="form-control w-25" placeholder="Buscar usuario, correo..." />
-                <button class="btn btn-altevia">Crear Usuario</button>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-light small text-uppercase text-muted">
-                        <tr><th>Usuario</th><th>Correo</th><th>Rol</th><th>Estado</th><th class="text-end">Acciones</th></tr>
-                    </thead>
-                    <tbody>
-
-                        <tr>
-                            <td class="fw-bold">superusuario</td>
-                            <td>super@altevia.com</td>
-                            <td>SuperUsuario</td>
-                            <td><span class="badge bg-success">Activo</span></td>
-                            <td class="text-end">
-                                <button class="btn btn-sm btn-outline-secondary">Detalles</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="fw-bold">admin01</td>
-                            <td>admin@altevia.com</td>
-                            <td>Administrador</td>
-                            <td><span class="badge bg-success">Activo</span></td>
-                            <td class="text-end">
-                                <button class="btn btn-sm btn-outline-primary">Editar</button>
-                                @if (esSuperUsuario)
-                                {<button class="btn btn-sm btn-outline-warning text-dark">Asignar rol</button>}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            @if (!esSuperUsuario)
-            {
-                <div class="alert alert-warning mt-3 mb-0" style="font-size: 0.85rem;">
-                    <i class="bi bi-lock-fill me-1"></i> <strong>Error de acceso:</strong> Solo el SuperUsuario puede asignar roles.
+    <div class="tab-pane fade @(tabActiva == "usuarios" ? "show active" : "")" id="usuarios" role="tabpanel">
+        <div class="card border-0 bg-light">
+            <div class="card-body p-4 d-flex align-items-center flex-wrap gap-3">
+                <i class="bi bi-people fs-1" style="color: var(--altevia-blue);"></i>
+                <div class="flex-grow-1">
+                    <h5 class="fw-bold mb-1">Usuarios del sistema</h5>
+                    <p class="text-muted mb-0 small">Crear, editar, activar/desactivar y eliminar cuentas. Asignar roles (solo SuperUsuario puede asignar Administrador y SuperUsuario).</p>
                 </div>
-            }
-        </div>
-
-
-        <div class="tab-pane fade @(tabActiva == "pasajeros" ? "show active" : "")" id="pasajeros" role="tabpanel">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-light small text-uppercase text-muted">
-                        <tr><th>Documento</th><th>Nombres y Apellidos</th><th>Correo</th><th>Teléfono</th><th>Registro</th><th class="text-end">Acciones</th></tr>
-                    </thead>
-                    <tbody>
-                        @if (pasajeros != null && pasajeros.Any())
-                        {
-                            foreach (var p in pasajeros)
-                            {
-                                <tr>
-                                    <td class="fw-bold">@p.TipoDocumentoCodigo<br /><span class="text-primary">@p.NumeroDocumento</span></td>
-                                    <td>@p.Apellidos, @p.Nombres</td>
-                                    <td>@(string.IsNullOrEmpty(p.Correo) ? "-" : p.Correo)</td>
-                                    <td>@(string.IsNullOrEmpty(p.Telefono) ? "-" : p.Telefono)</td>
-                                    <td>@p.FechaRegistro.ToString("dd/MM/yyyy")</td>
-                                    <td class="text-end">
-                                        <div class="btn-group shadow-sm" role="group">
-                                            <a href="@Url.Action("Edit", "Pasajeros", new { id=p.PasajeroId })" class="btn btn-sm btn-outline-primary" title="Editar"><i class="bi bi-pencil"></i></a>
-                                            <a href="@Url.Action("Details", "Pasajeros", new { id=p.PasajeroId })" class="btn btn-sm btn-outline-secondary" title="Detalles"><i class="bi bi-eye"></i></a>
-                                            <a href="@Url.Action("Delete", "Pasajeros", new { id=p.PasajeroId })" class="btn btn-sm btn-outline-danger" title="Eliminar"><i class="bi bi-trash"></i></a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
+                <a href="@Url.Action("Index", "Usuarios")" class="btn btn-altevia px-4"><i class="bi bi-person-gear me-1"></i> Abrir gestión de usuarios</a>
             </div>
         </div>
-
-
-        <div class="tab-pane fade @(tabActiva == "reservas" ? "show active" : "")" id="reservas" role="tabpanel">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-light small text-uppercase text-muted">
-                        <tr><th>Código</th><th>ID Usuario</th><th>Fecha Creación</th><th>Estado</th><th class="text-end">Acciones</th></tr>
-                    </thead>
-                    <tbody>
-                        @if (reservas != null && reservas.Any())
-                        {
-                            foreach (var r in reservas)
-                            {
-                                <tr>
-                                    <td class="fw-bold text-dark">@r.CodigoReserva</td>
-                                    <td><span class="badge bg-light text-dark border">@r.UsuarioId.Substring(0, 8)...</span></td>
-                                    <td>@r.FechaCreacion.ToString("dd/MM/yyyy HH:mm")</td>
-                                    <td>
-                                        @if (r.EstadoReservaCodigo == "CONFIRMADA")
-                                        {<span class="badge bg-success">@r.EstadoReservaCodigo</span> }
-                                    else if (r.EstadoReservaCodigo == "PENDIENTE")
-                                    { <span class="badge bg-warning text-dark">@r.EstadoReservaCodigo</span> }
-                                else
-                                { <span class="badge bg-danger">@r.EstadoReservaCodigo</span>}
-                                    </td>
-                                    <td class="text-end">
-                                        <div class="btn-group shadow-sm" role="group">
-                                            <a href="@Url.Action("Edit", "ReservasAdmin", new { id = r.ReservaId })" class="btn btn-sm btn-outline-primary" title="Editar"><i class="bi bi-pencil"></i></a>
-                                            <a href="@Url.Action("Details", "ReservasAdmin", new { id = r.ReservaId })" class="btn btn-sm btn-outline-secondary" title="Detalles"><i class="bi bi-eye"></i></a>
-                                            <a href="@Url.Action("Delete", "ReservasAdmin", new { id = r.ReservaId })" class="btn btn-sm btn-outline-danger" title="Eliminar"><i class="bi bi-trash"></i></a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
     </div>
+
+
+
+    <div class="tab-pane fade @(tabActiva == "pasajeros" ? "show active" : "")" id="pasajeros" role="tabpanel">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light small text-uppercase text-muted">
+                    <tr><th>Documento</th><th>Nombres y Apellidos</th><th>Correo</th><th>Teléfono</th><th>Registro</th><th class="text-end">Acciones</th></tr>
+                </thead>
+                <tbody>
+                    @if (pasajeros != null && pasajeros.Any())
+                    {
+                        foreach (var p in pasajeros)
+                        {
+                            <tr>
+                                <td class="fw-bold">@p.TipoDocumentoCodigo<br /><span class="text-primary">@p.NumeroDocumento</span></td>
+                                <td>@p.Apellidos, @p.Nombres</td>
+                                <td>@(string.IsNullOrEmpty(p.Correo) ? "-" : p.Correo)</td>
+                                <td>@(string.IsNullOrEmpty(p.Telefono) ? "-" : p.Telefono)</td>
+                                <td>@p.FechaRegistro.ToString("dd/MM/yyyy")</td>
+                                <td class="text-end">
+                                    <div class="btn-group shadow-sm" role="group">
+                                        <a href="@Url.Action("Edit", "Pasajeros", new { id=p.PasajeroId })" class="btn btn-sm btn-outline-primary" title="Editar"><i class="bi bi-pencil"></i></a>
+                                        <a href="@Url.Action("Details", "Pasajeros", new { id=p.PasajeroId })" class="btn btn-sm btn-outline-secondary" title="Detalles"><i class="bi bi-eye"></i></a>
+                                        <a href="@Url.Action("Delete", "Pasajeros", new { id=p.PasajeroId })" class="btn btn-sm btn-outline-danger" title="Eliminar"><i class="bi bi-trash"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <div class="tab-pane fade @(tabActiva == "reservas" ? "show active" : "")" id="reservas" role="tabpanel">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light small text-uppercase text-muted">
+                    <tr><th>Código</th><th>ID Usuario</th><th>Fecha Creación</th><th>Estado</th><th class="text-end">Acciones</th></tr>
+                </thead>
+                <tbody>
+                    @if (reservas != null && reservas.Any())
+                    {
+                        foreach (var r in reservas)
+                        {
+                            <tr>
+                                <td class="fw-bold text-dark">@r.CodigoReserva</td>
+                                <td><span class="badge bg-light text-dark border">@r.UsuarioId.Substring(0, 8)...</span></td>
+                                <td>@r.FechaCreacion.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>
+                                    @if (r.EstadoReservaCodigo == "CONFIRMADA")
+                                    {<span class="badge bg-success">@r.EstadoReservaCodigo</span> }
+                                else if (r.EstadoReservaCodigo == "PENDIENTE")
+                                { <span class="badge bg-warning text-dark">@r.EstadoReservaCodigo</span> }
+                            else
+                            { <span class="badge bg-danger">@r.EstadoReservaCodigo</span>}
+                                </td>
+                                <td class="text-end">
+                                    <div class="btn-group shadow-sm" role="group">
+                                        <a href="@Url.Action("Edit", "ReservasAdmin", new { id = r.ReservaId })" class="btn btn-sm btn-outline-primary" title="Editar"><i class="bi bi-pencil"></i></a>
+                                        <a href="@Url.Action("Details", "ReservasAdmin", new { id = r.ReservaId })" class="btn btn-sm btn-outline-secondary" title="Detalles"><i class="bi bi-eye"></i></a>
+                                        <a href="@Url.Action("Delete", "ReservasAdmin", new { id = r.ReservaId })" class="btn btn-sm btn-outline-danger" title="Eliminar"><i class="bi bi-trash"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
 </div>
 
 @section Scripts {

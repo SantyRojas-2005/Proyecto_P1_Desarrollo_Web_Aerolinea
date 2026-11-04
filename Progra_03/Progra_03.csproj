@@ -179,6 +179,7 @@
     <Compile Include="Controllers\PasajerosController.cs" />
     <Compile Include="Controllers\ReservasAdminController.cs" />
     <Compile Include="Controllers\ReservasController.cs" />
+    <Compile Include="Controllers\UsuariosController.cs" />
     <Compile Include="Controllers\VuelosController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -443,6 +444,9 @@
     <Content Include="Views\Reservas\Gestionar.cshtml" />
     <Content Include="Views\Comprobantes\Index.cshtml" />
     <Content Include="Views\Admin\Asistencia.cshtml" />
+    <Content Include="Views\Usuarios\Create.cshtml" />
+    <Content Include="Views\Usuarios\Edit.cshtml" />
+    <Content Include="Views\Usuarios\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

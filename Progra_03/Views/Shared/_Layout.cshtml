@@ -68,7 +68,7 @@
                                 <li>@Html.ActionLink("Mis Reservas", "MisReservas", "Reservas", new { area = "" }, new { @class = "dropdown-item" })</li>
                                 <li>@Html.ActionLink("Check-in", "Index", "CheckIn", new { area = "" }, new { @class = "dropdown-item" })</li>
                                 <li>@Html.ActionLink("Mis Comprobantes", "Index", "Comprobantes", new { area = "" }, new { @class = "dropdown-item" })</li>
-                                @if (User.IsInRole("Administrador") || User.IsInRole("SuperUsuario"))
+                                @if (User.IsInRole("Administrador") || User.IsInRole("SuperUsuario") || User.IsInRole("Counter"))
                                 {
                                     <li><hr class="dropdown-divider"></li>
                                     <li>@Html.ActionLink("Administración", "Index", "Admin", new { area = "" }, new { @class = "dropdown-item fw-bold text-primary" })</li>

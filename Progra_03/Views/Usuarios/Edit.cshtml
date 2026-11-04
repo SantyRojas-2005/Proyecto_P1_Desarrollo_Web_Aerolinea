@@ -1,0 +1,70 @@
+@model Progra_03.Controllers.UsuarioEditarViewModel
+@{
+    ViewBag.Title = "Editar Usuario";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool esMismoUsuario = ViewBag.EsMismoUsuario != null && (bool)ViewBag.EsMismoUsuario;
+}
+
+<div class="container mt-5 pt-4 mb-5" style="max-width: 720px;">
+    <h3 class="fw-bold mb-1" style="color: var(--altevia-blue);">Editar usuario</h3>
+    <p class="text-muted small mb-4">Usuario: <strong>@Model.UserName</strong></p>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+            @using (Html.BeginForm("Edit", "Usuarios", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.Id)
+                @Html.HiddenFor(m => m.UserName)
+                @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.UserName, new { @class = "form-label fw-bold" })
+                    <input type="text" class="form-control" value="@Model.UserName" disabled />
+                    <div class="form-text">El nombre de usuario no se puede cambiar.</div>
+                </div>
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.Email, new { @class = "form-label fw-bold" }) <span class="text-danger">*</span>
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email" })
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small" })
+                </div>
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.Rol, new { @class = "form-label fw-bold" }) <span class="text-danger">*</span>
+                    @if (esMismoUsuario)
+                    {
+                        @Html.HiddenFor(m => m.Rol)
+                        <input type="text" class="form-control" value="@Model.Rol" disabled />
+                        <div class="form-text">No puede cambiar su propio rol.</div>
+                    }
+                    else
+                    {
+                        @Html.DropDownListFor(m => m.Rol, (SelectList)ViewBag.Roles, new { @class = "form-select" })
+                    }
+                    @Html.ValidationMessageFor(m => m.Rol, "", new { @class = "text-danger small" })
+                </div>
+                <div class="form-check form-switch mb-4">
+                    @if (esMismoUsuario)
+                    {
+                        @Html.HiddenFor(m => m.Activo)
+                        <input class="form-check-input" type="checkbox" checked disabled />
+                    }
+                    else
+                    {
+                        @Html.CheckBoxFor(m => m.Activo, new { @class = "form-check-input" })
+                    }
+                    @Html.LabelFor(m => m.Activo, new { @class = "form-check-label" })
+                    <div class="form-text">Una cuenta inactiva no puede iniciar sesión.</div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-altevia px-4">Guardar cambios</button>
+                    <a href="@Url.Action("Index")" class="btn btn-outline-secondary">Cancelar</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

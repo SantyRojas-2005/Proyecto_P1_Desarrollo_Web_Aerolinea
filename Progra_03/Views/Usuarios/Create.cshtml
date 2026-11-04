@@ -1,0 +1,61 @@
+@model Progra_03.Controllers.UsuarioCrearViewModel
+@{
+    ViewBag.Title = "Crear Usuario";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5 pt-4 mb-5" style="max-width: 720px;">
+    <h3 class="fw-bold mb-1" style="color: var(--altevia-blue);">Crear usuario</h3>
+    <p class="text-muted small mb-4">El usuario ingresará al sistema con el <strong>nombre de usuario</strong> y la contraseña.</p>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+            @using (Html.BeginForm("Create", "Usuarios", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.UserName, new { @class = "form-label fw-bold" }) <span class="text-danger">*</span>
+                    @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", placeholder = "Ej. counter02" })
+                    @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger small" })
+                </div>
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.Email, new { @class = "form-label fw-bold" }) <span class="text-danger">*</span>
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", placeholder = "usuario@altevia.com" })
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small" })
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        @Html.LabelFor(m => m.Password, new { @class = "form-label fw-bold" }) <span class="text-danger">*</span>
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger small" })
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "form-label fw-bold" }) <span class="text-danger">*</span>
+                        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger small" })
+                    </div>
+                </div>
+                <div class="mb-4">
+                    @Html.LabelFor(m => m.Rol, new { @class = "form-label fw-bold" }) <span class="text-danger">*</span>
+                    @Html.DropDownListFor(m => m.Rol, (SelectList)ViewBag.Roles, new { @class = "form-select" })
+                    @Html.ValidationMessageFor(m => m.Rol, "", new { @class = "text-danger small" })
+                    @if (!User.IsInRole("SuperUsuario"))
+                    {
+                        <div class="form-text"><i class="bi bi-lock-fill"></i> Solo el SuperUsuario puede crear Administradores o SuperUsuarios.</div>
+                    }
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-altevia px-4">Guardar</button>
+                    <a href="@Url.Action("Index")" class="btn btn-outline-secondary">Cancelar</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
