@@ -1,0 +1,75 @@
+﻿@model IEnumerable<Progra_03.Models.ReservaPasajeroVuelo>
+@{
+    ViewBag.Title = "Asistencia Counter";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5 pt-4 mb-5">
+    <div class="d-flex align-items-center mb-4 border-bottom pb-3">
+        <i class="bi bi-headset fs-2 me-3 text-primary"></i>
+        <div>
+            <h2 class="fw-bold mb-0" style="color: var(--altevia-blue);">Asistencia en Mostrador</h2>
+            <p class="text-muted mb-0">Gestión de cancelaciones y revisión de boletos (MOD-09)</p>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm bg-light mb-4">
+        <div class="card-body p-4">
+            <form method="get" action="@Url.Action("Asistencia")" class="row g-3 align-items-end">
+                <div class="col-md-8">
+                    <label class="form-label fw-bold small text-muted text-uppercase">Código de Reserva o Documento del Pasajero</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                        <input type="text" name="criterioBusqueda" class="form-control" value="@ViewBag.Busqueda" placeholder="Ej. YX98LK o 17XXXXXXXX" required />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-altevia w-100 py-2">Buscar Boleto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="table-responsive bg-white rounded shadow-sm border">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light small text-uppercase text-muted">
+                    <tr>
+                        <th class="ps-4">Reserva</th>
+                        <th>Pasajero</th>
+                        <th>Vuelo</th>
+                        <th>Asiento</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="ps-4 fw-bold">@item.Reserva.CodigoReserva</td>
+                            <td>@item.Pasajero.Apellidos, @item.Pasajero.Nombres <br /><span class="small text-muted">@item.Pasajero.NumeroDocumento</span></td>
+                            <td>@item.VueloId.ToString("D5")</td>
+                            <td class="fw-bold text-center">@item.NumeroAsiento</td>
+                            <td>
+                                @if (item.EstadoAsignacionCodigo == "CONFIRMADA")
+                                {<span class="badge bg-success">@item.EstadoAsignacionCodigo</span> }
+                            else if (item.EstadoAsignacionCodigo == "CANCELADA")
+                            { <span class="badge bg-danger">@item.EstadoAsignacionCodigo</span> }
+                        else
+                        { <span class="badge bg-secondary">@item.EstadoAsignacionCodigo</span>}
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else if (ViewBag.Busqueda != null)
+    {
+        <div class="alert alert-warning text-center mt-4">
+            <i class="bi bi-exclamation-triangle-fill fs-4 d-block mb-2"></i>
+            No se encontraron boletos asociados al criterio ingresado.
+        </div>
+    }
+</div>

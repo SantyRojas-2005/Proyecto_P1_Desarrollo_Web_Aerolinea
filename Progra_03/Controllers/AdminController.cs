@@ -6,7 +6,8 @@ using Progra_03.Models;
 
 namespace Progra_03.Controllers
 {
-    [Authorize(Roles = "Administrador,SuperUsuario")]
+    // Permitimos acceso al Counter para su módulo específico
+    [Authorize(Roles = "Administrador,SuperUsuario,Counter")]
     public class AdminController : Controller
     {
         private AerolineaVIPContext db = new AerolineaVIPContext();
@@ -16,6 +17,29 @@ namespace Progra_03.Controllers
             return View();
         }
 
+        // --- MÓDULO COUNTER (MOD-09) ---
+        public ActionResult Asistencia(string criterioBusqueda)
+        {
+            if (string.IsNullOrEmpty(criterioBusqueda))
+            {
+                return View(new List<ReservaPasajeroVuelo>());
+            }
+
+            var resultados = db.ReservaPasajeroVuelo
+                               .Include("Reserva")
+                               .Include("Pasajero")
+                               .Include("Vuelo")
+                               .Where(r => r.Reserva.CodigoReserva == criterioBusqueda ||
+                                           r.Pasajero.NumeroDocumento == criterioBusqueda)
+                               .ToList();
+
+            ViewBag.Busqueda = criterioBusqueda;
+            return View(resultados);
+        }
+
+        // --- MÓDULOS ADMINISTRATIVOS EXISTENTES (Protegidos) ---
+
+        [Authorize(Roles = "Administrador,SuperUsuario")]
         public ActionResult Vuelos(DateTime? desde, DateTime? hasta)
         {
             if (!desde.HasValue) desde = DateTime.Today;
@@ -30,7 +54,6 @@ namespace Progra_03.Controllers
             ViewBag.Hasta = hasta.Value.ToString("yyyy-MM-dd");
             ViewBag.Aeronaves = db.Aeronave.Where(a => a.EstadoAeronaveCodigo == "DISPONIBLE").ToList();
             ViewBag.Estados = db.EstadoVuelo.ToList();
-
             ViewBag.Frecuencias = db.Frecuencia.Where(f => f.Activa == true).ToList();
             ViewBag.Itinerarios = db.Itinerario.ToList();
 
@@ -39,6 +62,7 @@ namespace Progra_03.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador,SuperUsuario")]
         public ActionResult GenerarVuelos(DateTime fechaDesde, DateTime fechaHasta)
         {
             try
@@ -55,6 +79,7 @@ namespace Progra_03.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador,SuperUsuario")]
         public ActionResult EditarVueloRapido(int VueloId, int? AeronaveId, string EstadoVueloCodigo)
         {
             try
@@ -64,7 +89,6 @@ namespace Progra_03.Controllers
                 {
                     vuelo.AeronaveId = AeronaveId;
                     vuelo.EstadoVueloCodigo = EstadoVueloCodigo;
-
                     db.SaveChanges();
                     TempData["MensajeExito"] = $"El vuelo VIP{VueloId.ToString("D5")} fue actualizado exitosamente.";
                 }
@@ -73,39 +97,31 @@ namespace Progra_03.Controllers
             {
                 string error = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                 if (ex.InnerException?.InnerException != null) error = ex.InnerException.InnerException.Message;
-
                 TempData["ErrorValidacion"] = "Conflicto operativo: " + error;
             }
-
             return RedirectToAction("Vuelos");
         }
 
+        [Authorize(Roles = "Administrador,SuperUsuario")]
         public ActionResult Aeronaves()
         {
-            var aeronaves = db.Aeronave
-                              .Include("ModeloAeronave")
-                              .Include("EstadoAeronave")
-                              .ToList();
-
+            var aeronaves = db.Aeronave.Include("ModeloAeronave").Include("EstadoAeronave").ToList();
             var vuelosProximos = new Dictionary<int, int>();
             DateTime hoy = DateTime.Today;
 
             foreach (var a in aeronaves)
             {
-                int count = db.Vuelo.Count(v => v.AeronaveId == a.AeronaveId
-                                             && v.FechaOperacion >= hoy
-                                             && v.EstadoVueloCodigo != "CANCELADO");
+                int count = db.Vuelo.Count(v => v.AeronaveId == a.AeronaveId && v.FechaOperacion >= hoy && v.EstadoVueloCodigo != "CANCELADO");
                 vuelosProximos.Add(a.AeronaveId, count);
             }
-
             ViewBag.VuelosProximos = vuelosProximos;
             ViewBag.Estados = db.EstadoAeronave.ToList();
-
             return View(aeronaves);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador,SuperUsuario")]
         public ActionResult EditarAeronave(int AeronaveId, string EstadoAeronaveCodigo)
         {
             try
@@ -125,19 +141,17 @@ namespace Progra_03.Controllers
             return RedirectToAction("Aeronaves");
         }
 
+        [Authorize(Roles = "Administrador,SuperUsuario")]
         public ActionResult Gestion(string tab = "reservas")
         {
             ViewBag.TabActiva = tab;
-
             ViewBag.Pasajeros = db.Pasajero.OrderByDescending(p => p.FechaRegistro).ToList();
-
             ViewBag.Reservas = db.Reserva.OrderByDescending(r => r.FechaCreacion).ToList();
-
             ViewBag.EsSuperUsuario = User.IsInRole("SuperUsuario");
-
             return View();
         }
 
+        [Authorize(Roles = "Administrador,SuperUsuario")]
         public ActionResult Reportes(DateTime? desde, DateTime? hasta)
         {
             if (!desde.HasValue) desde = DateTime.Today.AddDays(-7);
@@ -150,7 +164,6 @@ namespace Progra_03.Controllers
                               .Where(v => v.FechaOperacion >= desde.Value && v.FechaOperacion <= hasta.Value)
                               .OrderBy(v => v.FechaOperacion).ThenBy(v => v.HoraSalida)
                               .ToList();
-
             return View(ocupacion);
         }
 
