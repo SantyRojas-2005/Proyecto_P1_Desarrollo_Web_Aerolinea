@@ -67,6 +67,7 @@
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="navbarDropdown">
                                 <li>@Html.ActionLink("Mis Reservas", "MisReservas", "Reservas", new { area = "" }, new { @class = "dropdown-item" })</li>
                                 <li>@Html.ActionLink("Check-in", "Index", "CheckIn", new { area = "" }, new { @class = "dropdown-item" })</li>
+                                <li>@Html.ActionLink("Mis Comprobantes", "Index", "Comprobantes", new { area = "" }, new { @class = "dropdown-item" })</li>
                                 @if (User.IsInRole("Administrador") || User.IsInRole("SuperUsuario"))
                                 {
                                     <li><hr class="dropdown-divider"></li>

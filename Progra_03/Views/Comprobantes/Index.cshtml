@@ -1,4 +1,4 @@
-@model IEnumerable<Progra_03.Models.vw_ComprobanteDetalle>
+@model IEnumerable<Progra_03.Models.Comprobante>
 @{
     ViewBag.Title = "Mis Comprobantes";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -6,163 +6,81 @@
 
 <div class="container mt-5 pt-4 mb-5">
     <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
-        <h3 class="fw-bold mb-0" style="color: var(--altevia-blue);"><i class="bi bi-receipt-cutoff me-2"></i>Mis Comprobantes y Facturas</h3>
-    </div>
-
-
-    <div class="card bg-light border-0 shadow-sm mb-4">
-        <div class="card-body p-4">
-            <form method="get" action="@Url.Action("Index")" class="row g-3 align-items-end">
-                <div class="col-md-3">
-                    <label class="form-label small fw-bold text-muted text-uppercase">Desde (opcional)</label>
-                    <input type="date" name="desde" class="form-control" value="@ViewBag.Desde" />
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label small fw-bold text-muted text-uppercase">Hasta (opcional)</label>
-                    <input type="date" name="hasta" class="form-control" value="@ViewBag.Hasta" />
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label small fw-bold text-muted text-uppercase">Tipo (opcional)</label>
-                    <select name="tipo" class="form-select">
-                        <option value="Todos">Todos</option>
-                        @foreach (var t in ViewBag.TiposComprobante as List<Progra_03.Models.TipoComprobante>)
-                        {
-                            <option value="@t.Codigo" @(ViewBag.Tipo == t.Codigo ? "selected" : "")>@t.Descripcion</option>
-                        }
-                    </select>
-                </div>
-                <div class="col-md-2 d-grid gap-2">
-                    <button type="submit" class="btn btn-altevia fw-bold shadow-sm">Filtrar</button>
-                </div>
-            </form>
+        <div>
+            <h2 class="fw-bold mb-0" style="color: var(--altevia-blue);">Mis Comprobantes</h2>
+            <p class="text-muted mb-0">Historial de facturas académicas y notas de crédito</p>
         </div>
+        <i class="bi bi-receipt fs-1" style="color: var(--altevia-gold);"></i>
     </div>
 
-
-    <div class="card shadow-sm border-0 mb-4">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light text-muted small text-uppercase">
-                    <tr>
-                        <th>Número</th>
-                        <th>Tipo</th>
-                        <th>Fecha</th>
-                        <th>Reserva</th>
-                        <th>Importe</th>
-                        <th>Estado</th>
-                        <th class="text-end">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model != null && Model.Any())
-                    {
-                        foreach (var item in Model)
-                        {
-                            <tr>
-                                <td class="fw-bold">@item.NumeroComprobante</td>
-                                <td><span class="text-truncate d-inline-block" style="max-width: 250px;">@item.TipoComprobante</span></td>
-                                <td>@item.FechaEmision.ToString("dd/MM/yyyy")</td>
-                                <td><span class="badge bg-light text-dark border">@item.CodigoReserva</span></td>
-                                <td class="fw-bold text-dark">$@item.TotalOperacion.ToString("0.00")</td>
-                                <td>
-                                    @if (item.EstadoComprobanteCodigo == "EMITIDO")
-                                    {<span class="badge bg-success">Emitido</span> }
-                                    else
-                                    { <span class="badge bg-danger">@item.EstadoComprobanteCodigo</span>}
-                                </td>
-                                <td class="text-end">
-                                    <a href="@Url.Action("Index", new { idPreview = item.ComprobanteId, desde = ViewBag.Desde, hasta = ViewBag.Hasta, tipo = ViewBag.Tipo })" class="btn btn-sm btn-outline-secondary me-1">Visualizar</a>
-
-                                    <a href="@Url.Action("DescargarPDF", "Reservas", new { id = item.ReservaId })" class="btn btn-sm btn-danger shadow-sm"><i class="bi bi-file-pdf-fill"></i> Descargar PDF</a>
-                                </td>
-                            </tr>
-                        }
-                    }
-                    else
-                    {
-                        <tr><td colspan="7" class="text-center py-5 text-muted">No hay comprobantes para los filtros seleccionados.</td></tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-
-    @if (ViewBag.Preview != null)
+    @if (Model != null && Model.Any())
     {
-        var p = (Progra_03.Models.vw_ComprobanteDetalle)ViewBag.Preview;
-        var pasajeros = (List<string>)ViewBag.PreviewPasajeros;
-        var vuelos = (List<Progra_03.Models.vw_VueloDetalle>)ViewBag.PreviewVuelos;
-        var asientos = (List<string>)ViewBag.PreviewAsientos;
-        var detalles = (List<Progra_03.Models.ReservaPasajeroVuelo>)ViewBag.PreviewDetalles;
-
-        <div class="card card-reserva border-0 shadow-lg mt-5" id="vista-previa">
-            <div class="card-header bg-dark-blue text-white py-3 border-0 d-flex justify-content-between">
-                <h5 class="mb-0 fw-bold" style="color: var(--altevia-gold);">Vista Previa</h5>
-                <span class="badge bg-light text-dark fs-6">@p.NumeroComprobante</span>
-            </div>
-            <div class="card-body p-4 p-md-5">
-
-                <div class="row mb-4 border-bottom pb-4">
-                    <div class="col-md-6">
-                        <p class="text-muted small text-uppercase mb-1 fw-bold">Emisor</p>
-                        <h5 class="fw-bold text-dark">@p.EmisorNombre</h5>
-                        <p class="mb-0 text-muted">ID: @p.EmisorIdentificacion</p>
-                    </div>
-                    <div class="col-md-6 text-md-end mt-3 mt-md-0">
-                        <p class="text-muted small text-uppercase mb-1 fw-bold">Cliente / Reserva</p>
-                        <h5 class="fw-bold text-dark">ID: @p.UsuarioId.Substring(0, Math.Min(8, p.UsuarioId.Length))...</h5>
-                        <p class="mb-0 text-muted">Reserva Asoc: @p.CodigoReserva</p>
-                        <p class="mb-0 text-muted">Trx: @p.MarcaTarjeta @p.TarjetaEnmascarada (@p.CodigoOperacion)</p>
-                    </div>
-                </div>
-
-                <div class="table-responsive mb-4">
-                    <table class="table table-bordered align-middle">
-                        <thead class="table-light small text-uppercase text-muted">
+        <div class="card card-altevia border-0 shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle text-center mb-0">
+                        <thead class="bg-light text-muted small text-uppercase">
                             <tr>
-                                <th>Pasajero</th>
-                                <th>Vuelo</th>
-                                <th>Ruta</th>
-                                <th>Fecha</th>
-                                <th class="text-center">Asiento</th>
-                                <th class="text-end">Importe</th>
+                                <th class="py-3 ps-4 text-start">N° Comprobante</th>
+                                <th class="py-3">Fecha de Emisión</th>
+                                <th class="py-3">Tipo</th>
+                                <th class="py-3">Total (USD)</th>
+                                <th class="py-3">Estado</th>
+                                <th class="py-3 pe-4 text-end">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @for (int i = 0; i < detalles.Count; i++)
+                        <tbody class="border-top-0">
+                            @foreach (var item in Model)
                             {
                                 <tr>
-                                    <td>@pasajeros[i]</td>
-                                    <td class="fw-bold">@vuelos[i].CodigoVuelo</td>
-                                    <td>@vuelos[i].CiudadOrigen &rarr; @vuelos[i].CiudadDestino</td>
-                                    <td>@vuelos[i].FechaOperacion.ToString("dd/MM/yyyy")</td>
-                                    <td class="fw-bold text-center" style="color: var(--altevia-blue);">@asientos[i]</td>
-                                    <td class="text-end">$@detalles[i].ImporteTramo.ToString("0.00")</td>
+                                    <td class="ps-4 text-start fw-bold" style="color: var(--altevia-blue);">
+                                        @item.NumeroComprobante
+                                        <br />
+                                        <span class="text-muted small fw-normal">Reserva #@item.Compra.ReservaId.ToString("D6")</span>
+                                    </td>
+                                    <td>@item.FechaEmision.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>
+                                        @if (item.TipoComprobanteCodigo == "FACTURA")
+                                        {
+                                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary">Factura Académica</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger">Nota de Crédito</span>
+                                        }
+                                    </td>
+                                    <td class="fw-bold text-success">$@item.Compra.Importe</td>
+                                    <td>
+                                        @if (item.EstadoComprobanteCodigo == "EMITIDO")
+                                        {
+                                            <span class="badge bg-success">@item.EstadoComprobanteCodigo</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">@item.EstadoComprobanteCodigo</span>
+                                        }
+                                    </td>
+                                    <td class="pe-4 text-end">
+                                        <!-- Enlace directo al método PDF que ya existe en ReservasController -->
+                                        <a href="@Url.Action("DescargarPDF", "Reservas", new { id = item.Compra.ReservaId })" class="btn btn-outline-altevia btn-sm" target="_blank" title="Descargar Comprobante PDF">
+                                            <i class="bi bi-file-earmark-pdf-fill me-1"></i> Descargar PDF
+                                        </a>
+                                    </td>
                                 </tr>
                             }
                         </tbody>
-                        <tfoot class="table-light">
-                            <tr>
-                                <td colspan="5" class="text-end fw-bold">TOTAL</td>
-                                <td class="text-end fw-bold fs-5" style="color: var(--altevia-gold);">$@p.TotalOperacion.ToString("0.00") USD</td>
-                            </tr>
-                        </tfoot>
                     </table>
-                </div>
-
-
-                <div class="alert alert-info border-0 shadow-sm mb-0 d-flex align-items-center" style="background-color: rgba(212, 175, 55, 0.1); color: var(--altevia-blue);">
-                    <i class="bi bi-info-circle-fill fs-3 me-3" style="color: var(--altevia-gold);"></i>
-                    <p class="mb-0 small fw-bold"><strong>Información:</strong> @p.LeyendaComprobante</p>
                 </div>
             </div>
         </div>
-
-        <script>
-            window.onload = function() {
-                document.getElementById("vista-previa").scrollIntoView({ behavior: 'smooth' });
-            };
-        </script>
+    }
+    else
+    {
+        <div class="alert alert-info p-5 text-center shadow-sm border-0" style="background-color: #f8f9fa;">
+            <i class="bi bi-inbox-fill mb-3" style="font-size: 3rem; color: var(--altevia-gold);"></i>
+            <h4 class="fw-bold" style="color: var(--altevia-blue);">Sin comprobantes</h4>
+            <p class="text-muted mb-0">Usted no ha realizado ninguna compra o cancelación que genere comprobantes hasta el momento.</p>
+            <a href="@Url.Action("Index", "Home")" class="btn btn-altevia mt-4 px-4">Buscar vuelos</a>
+        </div>
     }
 </div>
