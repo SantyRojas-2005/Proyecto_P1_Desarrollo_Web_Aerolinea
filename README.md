@@ -14,7 +14,7 @@ Proyecto para el desarrollo de un sistema web monolítico destinado a la consult
 ## 2. Configuración de la Base de Datos
 El proyecto utiliza dos bases de datos separadas (una para el dominio del negocio y otra para ASP.NET Identity). Para inicializarlas:
 1. Abra Microsoft SQL Server Management Studio (SSMS).
-2. Localice el archivo `Script_BD_AerolineaVIP_Unificado.sql` (ubicado en la carpeta `database/`).
+2. Localice el archivo `Script_BD_AerolineaVIP.sql` (ubicado en la carpeta `database/`).
 3. Ejecute el script completo. Este archivo creará automáticamente las bases de datos `AerolineaVIP` y `AerolineaVIP_Identity`, junto con todas las tablas, vistas, y datos operativos de demostración de forma íntegra.
 
 ## 3. Ejecución del Proyecto
